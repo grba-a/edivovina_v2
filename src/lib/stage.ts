@@ -175,16 +175,47 @@ const request = () => {
   if (!raf) raf = requestAnimationFrame(measure)
 }
 
+let ro: ResizeObserver | null = null
+
 export function startStage() {
   if (started) return () => {}
   started = true
+
   window.addEventListener('scroll', request, { passive: true })
   window.addEventListener('resize', request)
+
+  /* SCROLL I RESIZE NISU DOVOLJNI.
+     Postaje se mjere iz DOM-a, pa svaka promjena visine dokumenta pomakne
+     granice pod nogama: lijena slika ispod ekrana se dovrsi, sekcije skliznu
+     nize, a posljednje izmjereno stanje ostane ustajalo sve do sljedeceg
+     scrolla. Tko u tom trenutku stoji na mjestu gleda pogresnu pozu.
+     Uhvaceno na produkciji 2026-09-16: `wines` i `trophies` su javljali pozu
+     prethodne sekcije dok se slike nisu ucitale.
+
+     Zato jos dva okidaca:
+       - `load`, za zadnje resurse koji dodu nakon prvog painta
+       - ResizeObserver nad <body>, koji hvata SVAKU promjenu visine, bez
+         obzira sto ju je izazvalo (slika, font, otvoren <details> izbornik) */
+  window.addEventListener('load', request)
+
+  /* Nema povratne petlje: `measure` pise samo `--amph-o` i `data-*` na <html>,
+     a nista od toga ne ulazi u raspored. Ako se ikad pojavi CSS koji po
+     `[data-lane]` mijenja visinu, ovaj promatrac postaje beskonacna petlja —
+     tada trake moraju ostati staticke klase, kako i jesu zamisljene. */
+  if (typeof ResizeObserver !== 'undefined') {
+    ro = new ResizeObserver(request)
+    ro.observe(document.body)
+  }
+
   measure()
+
   return () => {
     started = false
     window.removeEventListener('scroll', request)
     window.removeEventListener('resize', request)
+    window.removeEventListener('load', request)
+    ro?.disconnect()
+    ro = null
     if (raf) cancelAnimationFrame(raf)
     raf = 0
   }
