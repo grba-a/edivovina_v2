@@ -1,0 +1,30 @@
+@import "tailwindcss";
+@import "../styles/system.css";
+@import "../styles/site.css";
+
+@theme {
+  /* ------------------------------------------------------------------
+     Boje su UZORKOVANE s klijentovog zivog weba (edivovina.hr,
+     15. rujna 2026), ne izabrane. Petar je trazio istu paletu.
+
+       #040D1B  tamna podloga heroja i footera
+       #D8B87F  zlatna, jedini akcent
+       #FAF6F0  krem podloga tijela stranice
+       #2D3748  tekst na krem podlozi
+       #54595F  prigusen tekst na krem podlozi
+
+     `navy` je iz njihovog tiskanog brand guidea (Pantone 7463C) i sluzi
+     kao srednji ton izmedu ink i zlatne.
+     ------------------------------------------------------------------ */
+  --color-ink: #040d1b;
+  --color-ink-2: #0a1729;
+  --color-navy: #09334e;
+  --color-gold: #d8b87f;
+  /* Zlatna na krem podlozi pada na 1,9:1. Ovo je ista boja spustena do 4,6:1,
+     da oznake i linkovi na krem sekcijama prodju AA. */
+  --color-gold-ink: #866328;
+  --color-cream: #faf6f0;
+  --color-slate: #2d3748;
+  --color-muted: #54595f;
+  --color-hairline: rgba(216, 184, 127, 0.22);
+}

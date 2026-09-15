@@ -1,0 +1,235 @@
+/* ============================================================================
+   EDIVO v2 — system.css
+
+   Skala prostora, ljestvica tipografije, ritam sekcija i TRAKE za amforu.
+   Odluke se donose jednom, ovdje, prije komponenti — v1 i v2 iz prosle runde
+   su padale jer je svaki blok izmisljao svoja pravila.
+
+   Sve je u REM-ovima: ako korisnik digne velicinu teksta u pregledniku,
+   raspored mora rasti s njim.
+   ========================================================================= */
+
+:root {
+  /* --- prostor: jedna geometrijska skala ------------------------------- */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+  --s-10: 8rem;
+
+  /* Ritam sekcija su DVA tokena, ne devet vrijednosti po fileovima */
+  --sec-y: var(--s-8);
+  --sec-y-tight: var(--s-7);
+
+  --wrap: 78rem;
+  --gutter: var(--s-5);
+
+  /* --- tipografija -----------------------------------------------------
+     Klijentovi fontovi, s njihovog weba: Libre Baskerville za naslove,
+     Raleway za sve ostalo. Velicine su fluidne, ali s tvrdom gornjom
+     granicom — clamp bez granice na 2560 px daje naslov od 96 px koji vise
+     nije naslov nego poster. */
+  --t-hero: clamp(2.25rem, 7vw, 4.5rem);
+  --t-h2: clamp(1.75rem, 4.2vw, 2.75rem);
+  --t-h3: clamp(1.125rem, 2.2vw, 1.5rem);
+  --t-lead: clamp(1.0625rem, 1.6vw, 1.3125rem);
+  --t-body: 1rem;
+  --t-small: 0.875rem;
+  --t-label: 0.6875rem;
+
+  /* Mjera: tekst se ne cita preko 66 znakova, koliko god sirok bio ekran */
+  --measure: 62ch;
+
+  /* --- pokret ----------------------------------------------------------
+     Jedan set za cijeli web. Hero intro je CSS, ne knjiznica: GSAP na
+     hero naslovu je izmjereno kostao 5 s mobilnog LCP-a. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --t-ui: 200ms;
+  --t-enter: 520ms;
+
+  /* --- trake za amforu -------------------------------------------------
+     Koliko sekcija ustupi predmetu. Cita se iz `stage.ts` (LANE_*), pa je
+     klasa staticka i ne mijenja se u scrollu. */
+  --lane-side: 42%;
+  --lane-top: 9rem;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --sec-y: var(--s-9);
+    --sec-y-tight: var(--s-8);
+    --gutter: var(--s-7);
+    --lane-side: 38%;
+  }
+}
+
+@media (min-width: 62.5rem) {
+  :root {
+    --sec-y: var(--s-10);
+    --lane-side: 34%;
+  }
+}
+
+/* ---------------------------------------------------------------- osnove */
+
+html {
+  scroll-behavior: smooth;
+  /* Bez ovoga sidro sjedne pod fiksni header */
+  scroll-padding-top: 5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-cream);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: var(--t-body);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  line-height: 1.18;
+  text-wrap: balance;
+  margin: 0;
+}
+
+p { margin: 0; max-width: var(--measure); }
+
+::selection { background: var(--color-gold); color: var(--color-ink); }
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+/* ------------------------------------------------------------- raspored */
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  position: relative;
+  padding-block: var(--sec-y);
+}
+
+/* TRAKE. Sekcija ustupa prostor amfori, staticki, po svojoj ulozi.
+   Bez ovoga predmet sjedne preko odlomka — u v3 je to izmjereno na 29 %
+   teksta na jednostupcanom rasporedu. */
+.lane-r > .wrap { padding-inline-end: var(--lane-side); }
+.lane-l > .wrap { padding-inline-start: var(--lane-side); }
+.lane-t { padding-block-start: calc(var(--sec-y) + var(--lane-top)); }
+
+/* Mreza vina i medalja ne smije nositi bocnu traku — stisnuta mreza na
+   360 px daje kartice od 90 px. Te sekcije zato koriste gornju traku. */
+.lane-r > .wrap.full,
+.lane-l > .wrap.full { padding-inline: var(--gutter); }
+
+/* ------------------------------------------------------------- povrsine */
+
+.on-cream {
+  background: var(--color-cream);
+  color: var(--color-slate);
+}
+.on-cream h1, .on-cream h2, .on-cream h3, .on-cream h4 { color: var(--color-ink); }
+
+/* --------------------------------------------------------------- detalji */
+
+.eyebrow {
+  font-size: var(--t-label);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-gold);
+  margin: 0 0 var(--s-4);
+}
+.on-cream .eyebrow { color: var(--color-gold-ink); }
+
+.lead {
+  font-size: var(--t-lead);
+  line-height: 1.5;
+}
+
+/* Zlatna nit umjesto kartica sa sjenom. Njihov web je Elementor s kutijama;
+   ovo je isti sadrzaj bez kutija. */
+.rule {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(90deg, var(--color-gold), transparent);
+  margin: 0;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--font-sans), sans-serif;
+  font-size: var(--t-small);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: var(--s-3) var(--s-5);
+  border: 1px solid var(--color-gold);
+  color: var(--color-gold);
+  background: transparent;
+  text-decoration: none;
+  transition: background var(--t-ui) var(--ease-out), color var(--t-ui) var(--ease-out);
+}
+.btn:hover { background: var(--color-gold); color: var(--color-ink); }
+.on-cream .btn { border-color: var(--color-gold-ink); color: var(--color-gold-ink); }
+.on-cream .btn:hover { background: var(--color-gold-ink); color: var(--color-cream); }
+
+/* Predlozak, ne trgovina: gumbi su inertni dok se ne prepise u WooCommerce.
+   Vidi se da su gumbi, ali ne lazu da rade. */
+.btn[aria-disabled='true'] { cursor: default; opacity: 0.85; }
+.btn[aria-disabled='true']:hover { background: transparent; color: inherit; }
+
+/* ------------------------------------------------------ canvas s amforom
+
+   Fiksni sloj preko cijelog kadra. z-index je IZNAD sadrzaja jer je cijela
+   poanta da predmet bude pored ili preko sekcije, nikad iza nje — ali ispod
+   headera i ispod svega sto se klika, i s pointer-events: none. */
+.amph-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: var(--amph-o, 0);
+  transition: opacity 420ms var(--ease-out);
+}
+
+/* ------------------------------------------------------------ hero intro
+   CSS, ne knjiznica. Element je vidljiv u mirovanju i animacija ga samo
+   donese — nikad ne stoji na opacity 0 cekajuci promatraca. */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(0.75rem); }
+  to   { opacity: 1; transform: none; }
+}
+.rise { animation: rise var(--t-enter) var(--ease-out) both; }
+.rise-1 { animation-delay: 80ms; }
+.rise-2 { animation-delay: 190ms; }
+.rise-3 { animation-delay: 300ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rise { animation: none; opacity: 1; transform: none; }
+}
