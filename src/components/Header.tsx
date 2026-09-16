@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { NAV } from '@/data/copy'
 
 /**
@@ -10,9 +11,12 @@ export default function Header() {
   return (
     <header className="hdr">
       <div className="hdr-in">
-        <a href="/" className="hdr-logo" aria-label="Edivo Vina, home">
+        {/* `/` je jedina stvarna Next ruta na ovom predlosku, pa ide kroz
+            <Link>. Ostali linkovi ostaju <a> jer te stranice zasad ne
+            postoje — <Link> na nepostojecu rutu bi prefetchao 404. */}
+        <Link href="/" className="hdr-logo" aria-label="Edivo Wines, home">
           <Image src="/brand/logo.png" alt="Edivo Vina" width={112} height={38} priority />
-        </a>
+        </Link>
 
         <nav className="hdr-nav" aria-label="Main">
           {NAV.map((n) => (

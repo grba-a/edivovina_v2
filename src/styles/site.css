@@ -27,8 +27,17 @@
   inset-inline: 0;
   /* Iznad amfore: predmet leti preko sekcija, ali nikad preko navigacije. */
   z-index: 20;
-  background: linear-gradient(180deg, rgba(4, 13, 27, 0.92), rgba(4, 13, 27, 0));
-  backdrop-filter: blur(6px);
+  /* PUNA podloga, ne gradijent u prozirno.
+     S prozirnim dnom se sve sto sklizne pod header vidi KROZ njega. Na dnu
+     stranice je to bio footerov logo tocno iza headerova i ista navigacija
+     dvaput na istom mjestu — citalo se kao kvar. Mjereno: na 360x780 footer
+     je 741 px u kadru od 780, a na 360x640 nikako ne moze stati, pa se
+     sudar ne da rijesiti visinom footera; rjesava se time da header
+     zaklanja.
+     `backdrop-filter` je skinut: iza pune podloge nema sto zamucivati, a
+     blur preko cijele sirine je trajni posao za kompozitor. */
+  background: var(--color-ink);
+  border-block-end: 1px solid var(--color-hairline);
 }
 
 .hdr-in {
@@ -444,19 +453,34 @@
 .ftr {
   background: linear-gradient(180deg, var(--color-ink) 0%, #061220 100%);
   border-block-start: 1px solid var(--color-hairline);
+  /* Footer NE koristi `--sec-y` kao ostale sekcije. Mora stati u jedan kadar:
+     na dnu stranice se dalje ne skrola, pa sve sto je visse od kadra sklizne
+     pod fiksni header — a tamo footerov logo i navigacija sjednu tocno iza
+     headerovih i citaju se kao duplikat. Izmjereno na 1440x900. */
+  /* Mobilni ritam je uzi od ostalih sekcija namjerno: na 360x780 je footer
+     promasivao kadar za 12 px i logo mu je jos ulazio pod header. */
+  padding-block: var(--s-6) var(--s-5);
 }
 
-.ftr-in { display: grid; gap: var(--s-7); }
+.ftr-in { display: grid; gap: var(--s-5); }
 
 .ftr-mark img { width: 9rem; height: auto; }
 .ftr-claim {
-  margin-block-start: var(--s-4);
+  margin-block-start: var(--s-3);
   font-size: var(--t-small);
   color: rgba(250, 246, 240, 0.6);
   max-width: 30ch;
 }
 
-.ftr-nav { display: grid; gap: var(--s-3); align-content: start; }
+/* Dva stupca na mobitelu. Sest linkova s dodirnom metom od 44 px u jednom
+   stupcu je 324 px visine, i zbog njih footer nije stao u kadar. U dva stupca
+   su tri reda, meta ostaje 44 px, a stedi se ~170 px. */
+.ftr-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-2) var(--s-4);
+  align-content: start;
+}
 .ftr-nav a {
   display: inline-flex;
   align-items: center;
@@ -484,8 +508,15 @@
   min-height: 2.75rem;
 }
 
+/* Prazno je namjerno: ovo je mjesto za amforu i njen stalak. Ne nosi sadrzaj
+   jer predmet lebdi u fiksnom sloju iznad stranice, pa se ne moze „uliti" u
+   tok — moze mu se samo ostaviti prostor. */
+/* Mora biti bar toliko visoko da predmet sa stalkom ne prijede preko donje
+   crte i kartica. Na 360x640 je pri 19svh (122 px) stalak sjedao na njih. */
+.ftr-plinth { height: max(9rem, min(16rem, 24svh)); }
+
 .ftr-legal {
-  margin-block-start: var(--s-8);
+  margin-block-start: var(--s-6);
   padding-block-start: var(--s-5);
   border-block-start: 1px solid var(--color-hairline);
   display: flex;
@@ -498,5 +529,9 @@
 .ftr-legal p { font-size: var(--t-small); color: rgba(250, 246, 240, 0.45); }
 
 @media (min-width: 48rem) {
+  .ftr { padding-block: var(--s-8) var(--s-6); }
   .ftr-in { grid-template-columns: 1.4fr 1fr 1fr; gap: var(--s-8); }
+  /* Od tableta navise ima sirine, pa navigacija ide natrag u jedan stupac. */
+  .ftr-nav { grid-template-columns: 1fr; gap: var(--s-3); }
+  .ftr-plinth { height: min(24rem, 36svh); }
 }

@@ -68,7 +68,7 @@ const WIDE: Record<Act, Pose> = {
   wines:    { x: -0.86, y: -0.34, z: 0.34, tilt: -14, o: 0,    lane: 0   },
   press:    { x:  0.48, y: -0.34, z: 2.10, tilt:  17, o: 1,    lane: 'r' },
   trophies: { x: -0.80, y: -0.30, z: 0.32, tilt:  -6, o: 0,    lane: 0   },
-  footer:   { x:  0.00, y: -0.05, z: 0.95, tilt:   0, o: 1,    lane: 0   },
+  footer:   { x:  0.00, y: -0.45, z: 0.95, tilt:   0, o: 1,    lane: 0   },
 }
 
 /**
@@ -86,7 +86,7 @@ const NARROW: Record<Act, Pose> = {
   wines:    { x: -0.72, y: -0.34, z: 0.30, tilt: -14, o: 0,    lane: 0   },
   press:    { x:  0.44, y: -0.30, z: 1.25, tilt:  16, o: 1,    lane: 'r' },
   trophies: { x: -0.68, y: -0.30, z: 0.28, tilt:  -6, o: 0,    lane: 0   },
-  footer:   { x:  0.00, y:  0.02, z: 0.72, tilt:   0, o: 1,    lane: 't' },
+  footer:   { x:  0.00, y: -0.34, z: 0.60, tilt:   0, o: 1,    lane: 0   },
 }
 
 /**
@@ -105,9 +105,20 @@ export const LANE_WIDE: Record<Act, Lane> = {
 /** Ista granica kao u CSS-u (`--bp-wide`). Ako se mijenja, mijenja se na oba mjesta. */
 export const BREAKPOINT_WIDE = 1000
 
-export type Stage = Pose & { act: Act }
+export type Stage = Pose & {
+  act: Act
+  /**
+   * Koliko je predmet SJEO u footeru: 0 nigdje drugdje, 1 kad je footerova
+   * poza dosegnuta, a izmedu raste kroz predaju prema footeru.
+   *
+   * Postoji zbog kovanog stalka: stalak se smije pojaviti samo kad predmet
+   * dolazi na svoje mjesto, pa mu treba MJERA priblizavanja, ne samo ime
+   * sekcije.
+   */
+  settle: number
+}
 
-const state: Stage = { ...NARROW.hero, act: 'hero' }
+const state: Stage = { ...NARROW.hero, act: 'hero', settle: 0 }
 export const getStage = (): Stage => state
 
 let raf = 0
@@ -175,6 +186,12 @@ const measure = () => {
      koja mijenja padding usred scrolla se trza. Prebacuje se na polovici
      predaje, kad je predmet ionako u pokretu. */
   state.lane = e < 0.5 ? from.lane : to.lane
+
+  /* Footer je zadnja sekcija, pa je njegov `to` on sam — zato se „u footeru"
+     i „dolazim u footer" moraju razlikovati rucno. */
+  const here = state.act === 'footer'
+  const heading = !here && (nextEl.dataset.act as Act) === 'footer'
+  state.settle = here ? 1 : heading ? e : 0
 
   const root = document.documentElement
   root.style.setProperty('--amph-o', state.o.toFixed(3))

@@ -5,6 +5,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { getStage } from '@/lib/stage'
+import { standGeometry, IRON } from './stand'
 
 const MODEL = '/model/amphora.glb'
 
@@ -37,6 +38,21 @@ export default function Mesh({ rich, still }: { rich: boolean; still: boolean })
   const cur = useRef({ x: 0, y: 0, z: 1, tilt: 0, o: 0 })
   const spin = useRef(0)
   const intro = useRef(0)
+
+  /* Stalak je SUSJED amfore, ne dijete. Da je dijete, vrtio bi se i naginjao
+     s njom — a stalak stoji. */
+  const stand = useRef<THREE.Group>(null)
+  const settle = useRef(0)
+  /* Materijal amfore se cita KROZ MESH REF, ne iz `useMemo` zatvarača.
+     Klon iz GLB-a se mora napraviti jednom (nosi pecenu teksturu gline), ali
+     mijenjati ga po frameu smije se samo preko refa — inace je to mutacija
+     memoizirane vrijednosti, sto React Compiler ne dopusta. */
+  const body = useRef<THREE.Mesh>(null)
+
+  const standGeo = useMemo(() => standGeometry(rich), [rich])
+  /* Materijal stalka se pravi u JSX-u i drzi u refu. Ref se SMIJE mijenjati
+     po frameu; objekt iz `useMemo` ne bi smio, i to je eslint tocno prijavio. */
+  const standMat = useRef<THREE.MeshStandardMaterial>(null)
 
   /** Geometrija i KLON materijala — GLTF je kesiran, original se ne dira. */
   const { geometry, material } = useMemo(() => {
@@ -93,21 +109,60 @@ export default function Mesh({ rich, still }: { rich: boolean; still: boolean })
     g.position.y = THREE.MathUtils.clamp(c.y * halfH, -halfH - halfObj * 0.4, halfH - halfObj * 0.15)
 
     g.rotation.z = THREE.MathUtils.degToRad(c.tilt)
+
+    /* Koliko je predmet sjeo u stalak. Izgladeno, da se vrtnja ne zakoci
+       naglo kad `stage` prijedje u footer. */
+    settle.current = lerp(settle.current, st.settle, snap ? 1 : Math.min(1, dt * 2.6))
+    const sit = settle.current
+
     /* Spori tumble oko svoje osi — predmet u vodi nije montiran na stalak.
        Na 'demand' frameloopu se okrece po scrollu, sto je i dalje bolje od
-       ukocenog predmeta. */
-    spin.current += snap ? 0.006 : dt * 0.14
+       ukocenog predmeta.
+
+       U FOOTERU se gasi: tamo amfora sjedi u kovanom stalku, a predmet koji
+       lezi u stalku i pritom se vrti se cita kao greska, ne kao pokret. Vrtnja
+       zato slabi kako `settle` raste i stane kad je predmet na mjestu.
+       Da se vrati vrtnja i u stalku: skini `* (1 - sit)`. */
+    spin.current += (snap ? 0.006 : dt * 0.14) * (1 - sit)
     g.rotation.y = spin.current
 
     const io = snap ? 1 : intro.current
-    material.opacity = c.o * io
-    g.visible = material.opacity > 0.01
+    const bodyMat = body.current?.material as THREE.MeshStandardMaterial | undefined
+    const alpha = c.o * io
+    if (bodyMat) bodyMat.opacity = alpha
+    g.visible = alpha > 0.01
+
+    /* Stalak prati amforu u polozaju i velicini, ali NIKAD u rotaciji: ravno
+       stoji na sve cetiri noge. Pojavljuje se samo koliko je predmet sjeo. */
+    const sg = stand.current
+    if (sg) {
+      sg.position.copy(g.position)
+      sg.scale.setScalar(s)
+      const sm = standMat.current
+      if (sm) {
+        sm.opacity = sit * alpha
+        sg.visible = sm.opacity > 0.01
+      }
+    }
   })
 
   return (
-    <group ref={group}>
-      <mesh geometry={geometry} material={material} />
-    </group>
+    <>
+      <group ref={group}>
+        <mesh ref={body} geometry={geometry}>
+          <primitive object={material} attach="material" />
+        </mesh>
+      </group>
+
+      {/* Kovani stalak s klijentove fotografije proizvoda. Geometrija je u
+          jedinicama modela amfore, pa se skalira istim mnoziteljem i sama
+          sjedne pod konus. */}
+      <group ref={stand}>
+        <mesh geometry={standGeo}>
+          <meshStandardMaterial ref={standMat} {...IRON} transparent />
+        </mesh>
+      </group>
+    </>
   )
 }
 

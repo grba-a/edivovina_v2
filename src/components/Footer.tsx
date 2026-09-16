@@ -37,6 +37,12 @@ export default function Footer() {
         </address>
       </div>
 
+      {/* POSTOLJE. Prazan pojas u koji amfora sjedne na svoj kovani stalak.
+          Postoji jer je predmet inace stajao PREKO footer navigacije — Petar
+          je trazio da bude ispod footera, ne na njemu. Visina je odmjerena
+          prema stvarnoj visini predmeta sa stalkom (~44 % kadra na desktopu). */}
+      <div className="ftr-plinth" aria-hidden />
+
       <div className="wrap ftr-legal">
         <Image src="/brand/trust-badge.png" alt="" width={180} height={38} />
         <p>&#169; {new Date().getFullYear()} Edivo Vina. Pelješac, Croatia.</p>
