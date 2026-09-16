@@ -140,17 +140,39 @@
   background: var(--color-ink);
 }
 
-.hero-bg { object-fit: cover; object-position: 50% 40%; z-index: 0; }
+/* KADRIRANJE, ne samo osvjetljenje.
+   Fotografija je vodoravna (1920x1195), a mobilni hero je uspravan, pa `cover`
+   reze usku traku. Na `50% 40%` je ta traka padala na neizostren zid u sredini
+   gore — i slika se citala kao da je nema, iako je ucitana.
+   Sadrzaj (obrasla amfora, kutije, kamenice) je u LIJEVOJ i DONJOJ polovici,
+   pa uspravni kadar mora gledati tamo. */
+.hero-bg {
+  object-fit: cover;
+  object-position: 30% 50%;
+  z-index: 0;
+}
 
-/* Zastor je tezi PRI DNU, ne ravnomjeran: ravnomjerni zastor zadovolji
-   kontrast i ubije fotografiju. */
+/* ZASTOR NIJE POTENCIOMETAR.
+   Prva verzija je imala i gornji sloj (0,55) i donji do 52 % visine, i to je
+   na ovoj fotografiji (luma 13/255 prije gradea) ugusilo sliku u tamnu mrlju
+   — sto se i vidjelo na produkciji.
+
+   Dvije promjene, obje u smjeru SLABIJEG zastora:
+   - gornjeg sloja vise nema. Header je dobio punu podlogu, pa gornji zastor
+     nista ne stiti, samo je tamnio nebo fotografije.
+   - donji je jaci ali KRATAK: stiti samo pojas u kojem stoji tekst i pusti
+     gornje dvije trecine kadra cistima. */
 .hero-scrim {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background:
-    linear-gradient(180deg, rgba(4, 13, 27, 0.55) 0%, rgba(4, 13, 27, 0) 34%),
-    linear-gradient(0deg, rgba(4, 13, 27, 0.92) 0%, rgba(4, 13, 27, 0.15) 52%);
+  background: linear-gradient(
+    0deg,
+    rgba(4, 13, 27, 0.88) 0%,
+    rgba(4, 13, 27, 0.62) 18%,
+    rgba(4, 13, 27, 0.12) 38%,
+    rgba(4, 13, 27, 0) 56%
+  );
 }
 
 /* KOMPAS JE OBUSTAVLJEN — Petar, 2026-09-16. Nista se na stranici ne vrti.
@@ -204,6 +226,8 @@
 
 @media (min-width: 48rem) {
   .hero { min-height: 100svh; padding-block: 10rem var(--s-9); }
+  /* Sirok kadar uzima gotovo cijelu sliku, pa se smije vratiti na sredinu. */
+  .hero-bg { object-position: 42% 50%; }
   .hero-bottles { width: min(26rem, 46%); }
 }
 
