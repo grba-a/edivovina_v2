@@ -367,9 +367,17 @@
   padding-block: var(--s-5);
   text-decoration: none;
   color: inherit;
-  transition: padding-inline-start var(--t-ui) var(--ease-out);
+  /* Pomak na hoveru ide kroz `transform`, NE kroz padding. Padding je
+     svojstvo rasporeda: animiran, pokrece layout na svakom frameu, i to na
+     elementu unutar grida. `translate` radi na kompozitoru i ne dira raspored.
+     (Uhvatio impeccable hook, 2026-09-16.) */
+  transition: transform var(--t-ui) var(--ease-out);
 }
-.press a:hover { padding-inline-start: var(--s-3); }
+.press a:hover { transform: translateX(var(--s-3)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .press a:hover { transform: none; }
+}
 
 .press-outlet {
   font-size: var(--t-label);
