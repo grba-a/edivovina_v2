@@ -32,14 +32,14 @@ export default function Footer() {
 
         <address className="ftr-where">
           <span>Edivo Vina d.o.o.</span>
-          <span>Drace, Janjina, Peljesac</span>
+          <span>Drače, Janjina, Pelješac</span>
           <a href="mailto:info@edivovina.hr">info@edivovina.hr</a>
         </address>
       </div>
 
       <div className="wrap ftr-legal">
         <Image src="/brand/trust-badge.png" alt="" width={180} height={38} />
-        <p>&#169; {new Date().getFullYear()} Edivo Vina. Peljesac, Croatia.</p>
+        <p>&#169; {new Date().getFullYear()} Edivo Vina. Pelješac, Croatia.</p>
       </div>
     </footer>
   )

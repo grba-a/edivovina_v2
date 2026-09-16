@@ -8,7 +8,7 @@
 
 export type Award = {
   body: string
-  /** godina ili raspon kako stoji kod njih; prazno gdje ga sami ne navode */
+  /** godina kako stoji kod njih; prazno gdje je sami ne navode */
   year?: string
   what: string
   kind: 'wine' | 'design' | 'mixed'
@@ -18,7 +18,7 @@ export type Award = {
 export const AWARDS: Award[] = [
   {
     body: 'Decanter World Wine Awards',
-    what: 'Dingac, srebrna medalja',
+    what: 'Dingač has been awarded a Silver medal',
     kind: 'wine',
     medal: '/medal/decanter.png',
     // Klijent nije dao ni godinu ni berbu — zato ih ovdje nema.
@@ -26,35 +26,35 @@ export const AWARDS: Award[] = [
   {
     body: 'America Wine Awards',
     year: '2021',
-    what: 'Navis Mysterium Amphora 2013 i Navis Mysterium Bottle 2013, zlatna medalja',
+    what: 'Navis Mysterium Amphora 2013 and Navis Mysterium Bottle 2013, golden medal',
     kind: 'wine',
     medal: '/medal/gold.png',
   },
   {
     body: 'Sabatina',
     year: '2017',
-    what: 'Navis Mysterium amphora 2012, prvak za dizajn; Edivo Dingac 2014',
+    what: 'Navis Mysterium amphora 2012, championship for design. Edivo Dingač 2014',
     kind: 'design',
     medal: '/medal/america.png',
   },
   {
     body: 'Sabatina',
     year: '2016',
-    what: 'Navis Mysterium bottle 2012, doprvak za dizajn proizvoda i zlato za kvalitetu vina',
+    what: 'Navis Mysterium bottle 2012, vice-champion for product design and golden medal for wine quality',
     kind: 'mixed',
     medal: '/medal/gold.png',
   },
   {
     body: 'Sabatina',
     year: '2015',
-    what: 'Edivo Plavac 2015, srebro za kvalitetu vina',
+    what: 'Edivo Plavac 2015, silver medal for wine quality',
     kind: 'wine',
     medal: '/medal/silver.png',
   },
 ]
 
 export const KIND_LABEL: Record<Award['kind'], string> = {
-  wine: 'Kvaliteta vina',
-  design: 'Dizajn',
-  mixed: 'Dizajn i vino',
+  wine: 'Wine quality',
+  design: 'Design',
+  mixed: 'Design and wine',
 }

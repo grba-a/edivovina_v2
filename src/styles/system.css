@@ -218,6 +218,13 @@ p { margin: 0; max-width: var(--measure); }
   transition: opacity 420ms var(--ease-out);
 }
 
+/* Kroz shop i nagrade predmeta nema. Sloj se gasi tek kad prijelaz zavrsi,
+   inace bi `visibility` odrezao samo blijedenje. */
+:root[data-amph='off'] .amph-canvas {
+  visibility: hidden;
+  transition: opacity 420ms var(--ease-out), visibility 0s linear 420ms;
+}
+
 /* ------------------------------------------------------------ hero intro
    CSS, ne knjiznica. Element je vidljiv u mirovanju i animacija ga samo
    donese — nikad ne stoji na opacity 0 cekajuci promatraca. */

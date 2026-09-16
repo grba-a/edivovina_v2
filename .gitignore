@@ -44,3 +44,6 @@ next-env.d.ts
 .cache/
 .shots/
 .vercel
+
+# radne snimke iz Playwright audita
+.shots/

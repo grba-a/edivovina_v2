@@ -41,13 +41,24 @@
   gap: var(--s-5);
 }
 
-.hdr-logo { display: flex; line-height: 0; }
+/* Logo je link na naslovnicu, pa i on nosi dodirnu metu od 44 px.
+   Slika ostaje 32 px visoka — meta je veca od grafike, ne obrnuto. */
+.hdr-logo {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  line-height: 0;
+}
 .hdr-logo img { height: 2rem; width: auto; }
 
 .hdr-nav { display: none; }
 
 .hdr-nav a,
 .hdr-menu nav a {
+  /* Dodirna meta, ne samo tekst. Audit je mjerio link visok 32 px. */
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   color: var(--color-cream);
   text-decoration: none;
   font-size: var(--t-small);
@@ -63,8 +74,10 @@
 .hdr-menu summary {
   list-style: none;
   cursor: pointer;
-  width: 2.5rem;
-  height: 2.5rem;
+  /* 44 px je minimalna dodirna meta (Apple HIG). Bilo je 2,5rem = 40 px,
+     sto je audit u WebKitu uhvatio kao 40x40. */
+  width: 2.75rem;
+  height: 2.75rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -131,6 +144,23 @@
     linear-gradient(0deg, rgba(4, 13, 27, 0.92) 0%, rgba(4, 13, 27, 0.15) 52%);
 }
 
+/* KOMPAS JE OBUSTAVLJEN — Petar, 2026-09-16. Nista se na stranici ne vrti.
+
+   Zasto nije uspio, da se ne pokusava treci put: njihov PNG
+   (`header-level-2.png`) je svjetla grafika (prosjek RGB 213) ali s vlastitom
+   alfom od samo 50/255 — dakle vec ~80 % prozirna. Preko toga je isao nas
+   `opacity: 0.5` i dva tamna sloja zastora heroja, pa je od svjetlih prstena
+   ostalo oko 10 % na tamnoj fotografiji. Vrtnja je cijelo vrijeme radila
+   (izmjereno u WebKitu: 903 ms napretka u 900 ms), samo se vrtjelo nesto
+   sto se ne vidi.
+
+   Da se ikad vraca: PNG treba presvijetliti ili mu dici alfu, a zastor
+   heroja oslabiti ispod kompasa — ne dizati `opacity` preko 0,5, jer to
+   pojede fotografiju.
+
+   Datoteka ostaje u `public/texture/` (ne posluzuje se jer je nitko ne
+   referencira), zajedno s `pattern-light.png` koji takoder nije u upotrebi. */
+
 .hero-in {
   position: relative;
   z-index: 2;
@@ -169,6 +199,7 @@
 }
 
 @media (min-width: 62.5rem) {
+
   .hero-in {
     grid-template-columns: 1fr auto;
     align-items: end;
@@ -273,7 +304,16 @@
 }
 
 .wine-name { font-size: var(--t-body); line-height: 1.35; }
-.wine-name a { color: var(--color-cream); text-decoration: none; }
+/* Naziv je glavni link kartice, a mjeren je na 151x20 px. Padding mu daje
+   dodirnu metu bez da razmakne mrezu — negativna margina vraca prostor. */
+.wine-name a {
+  color: var(--color-cream);
+  text-decoration: none;
+  display: block;
+  padding-block: var(--s-2);
+  margin-block: calc(var(--s-2) * -1);
+  min-height: 2.75rem;
+}
 .wine-name a:hover { color: var(--color-gold); }
 
 .wine-kind {
@@ -410,6 +450,9 @@
 
 .ftr-nav { display: grid; gap: var(--s-3); align-content: start; }
 .ftr-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   color: rgba(250, 246, 240, 0.8);
   text-decoration: none;
   font-size: var(--t-small);
@@ -425,7 +468,13 @@
   font-size: var(--t-small);
   color: rgba(250, 246, 240, 0.6);
 }
-.ftr-where a { color: var(--color-gold); text-decoration: none; }
+.ftr-where a {
+  color: var(--color-gold);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
 
 .ftr-legal {
   margin-block-start: var(--s-8);

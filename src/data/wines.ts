@@ -17,7 +17,7 @@ export type Wine = {
   photo: string
   /** sjedi li vino u moru; nosi oznaku na kartici */
   undersea: boolean
-  /** kratka oznaka tipa, iz njihovog kataloga */
+  /** kratka oznaka tipa, iz njihovog kataloga; engleski, kao i ostatak weba */
   kind: string
 }
 
@@ -28,7 +28,7 @@ export const WINES: Wine[] = [
     price: 382,
     photo: '/photo/p-undersea-amphora.jpg',
     undersea: true,
-    kind: 'Amfora',
+    kind: 'Amphora',
   },
   {
     slug: 'navis-mysterium-undersea-bottle',
@@ -36,7 +36,7 @@ export const WINES: Wine[] = [
     price: 117,
     photo: '/photo/p-undersea-bottle.jpg',
     undersea: true,
-    kind: 'Dingac',
+    kind: 'Dingač',
   },
   {
     slug: 'navis-q-sea-bottle',
@@ -52,7 +52,7 @@ export const WINES: Wine[] = [
     price: 110,
     photo: '/photo/p-eros.jpg',
     undersea: true,
-    kind: 'Pjenusac',
+    kind: 'Sparkling',
   },
   {
     slug: 'navis-mysterium-tris',
@@ -60,7 +60,7 @@ export const WINES: Wine[] = [
     price: 536,
     photo: '/photo/p-tris.jpg',
     undersea: true,
-    kind: 'Set',
+    kind: 'Three-bottle set',
   },
   {
     slug: 'navis-mysterium-regular-bottle',
@@ -68,7 +68,7 @@ export const WINES: Wine[] = [
     price: 39,
     photo: '/photo/p-regular.jpg',
     undersea: false,
-    kind: 'Dingac',
+    kind: 'Dingač',
   },
   {
     slug: 'q-edivo',
@@ -80,11 +80,11 @@ export const WINES: Wine[] = [
   },
   {
     slug: 'rose',
-    name: 'Rose',
+    name: 'Rosé',
     price: 17.5,
     photo: '/photo/p-rose.jpg',
     undersea: false,
-    kind: 'Rose',
+    kind: 'Rosé',
   },
 ]
 

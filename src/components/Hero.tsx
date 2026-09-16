@@ -41,6 +41,9 @@ export default function Hero() {
             height={360}
             sizes="(min-width: 62.5rem) 520px, 70vw"
             className="hero-bottles"
+            /* Next je ovu sliku prijavio kao LCP element. Lijena je bila po
+               zadanom, pa je najveca stvar u kadru cekala hidraciju. */
+            priority
           />
         </div>
 

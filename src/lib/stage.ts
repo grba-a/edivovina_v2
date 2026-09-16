@@ -48,13 +48,26 @@ export type Pose = {
   lane: Lane
 }
 
+/**
+ * SHOP I NAGRADE SU PRAZNI (o: 0). Petar, 2026-09-16.
+ *
+ * Obje sekcije su guste mreze — osam boca i pet medalja. Predmet koji lebdi
+ * preko njih se tuce sa sadrzajem umjesto da ga nosi, a na mreze se ne moze
+ * ustupiti bocna traka a da kartica na 360 px ne padne na ~90 px.
+ *
+ * Ne gasi se naglo nego TONE: poza je gurnuta nize (`y` u minus), dalje od
+ * kamere (`z` pada) i van kadra (`x`), pa predaja s prethodne sekcije izgleda
+ * kao da predmet klizne u mrak i vrati se gore kad mreza prode. Skok na
+ * `o: 0` bez tog pomaka bi se citao kao da se nesto pokvarilo.
+ */
+
 /** Desktop: ima bocnog prostora, predmet smije biti velik i ici preko ruba. */
 const WIDE: Record<Act, Pose> = {
   hero:     { x:  0.00, y: -0.10, z: 1.00, tilt: -24, o: 0,    lane: 0   },
   story:    { x:  0.62, y:  0.16, z: 1.35, tilt:   8, o: 1,    lane: 'r' },
-  wines:    { x: -0.72, y:  0.40, z: 0.50, tilt: -14, o: 0.85, lane: 'l' },
+  wines:    { x: -0.86, y: -0.34, z: 0.34, tilt: -14, o: 0,    lane: 0   },
   press:    { x:  0.48, y: -0.34, z: 2.10, tilt:  17, o: 1,    lane: 'r' },
-  trophies: { x: -0.66, y:  0.46, z: 0.38, tilt:  -6, o: 0.8,  lane: 'l' },
+  trophies: { x: -0.80, y: -0.30, z: 0.32, tilt:  -6, o: 0,    lane: 0   },
   footer:   { x:  0.00, y: -0.05, z: 0.95, tilt:   0, o: 1,    lane: 0   },
 }
 
@@ -70,9 +83,9 @@ const WIDE: Record<Act, Pose> = {
 const NARROW: Record<Act, Pose> = {
   hero:     { x:  0.00, y:  0.30, z: 0.70, tilt: -18, o: 0,    lane: 0   },
   story:    { x:  0.52, y:  0.30, z: 0.80, tilt:   8, o: 1,    lane: 'r' },
-  wines:    { x: -0.70, y:  0.62, z: 0.40, tilt: -14, o: 0.85, lane: 't' },
+  wines:    { x: -0.72, y: -0.34, z: 0.30, tilt: -14, o: 0,    lane: 0   },
   press:    { x:  0.44, y: -0.30, z: 1.25, tilt:  16, o: 1,    lane: 'r' },
-  trophies: { x: -0.50, y:  0.48, z: 0.34, tilt:  -6, o: 0.8,  lane: 't' },
+  trophies: { x: -0.68, y: -0.30, z: 0.28, tilt:  -6, o: 0,    lane: 0   },
   footer:   { x:  0.00, y:  0.02, z: 0.72, tilt:   0, o: 1,    lane: 't' },
 }
 
@@ -165,6 +178,10 @@ const measure = () => {
 
   const root = document.documentElement
   root.style.setProperty('--amph-o', state.o.toFixed(3))
+  /* Providan canvas i dalje kompozitira preko cijelog kadra. Kroz shop i
+     nagrade je to dvije duge sekcije besplatnog posla za GPU, pa se sloj tu
+     gasi. `visibility` ne dira raspored, pa ne budi ResizeObserver. */
+  root.dataset.amph = state.o < 0.01 ? 'off' : 'on'
   root.dataset.lane = state.lane === 0 ? 'none' : state.lane
   root.dataset.stageAct = state.act
 
