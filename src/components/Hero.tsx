@@ -16,14 +16,29 @@ import { HERO } from '@/data/copy'
 export default function Hero() {
   return (
     <section data-act="hero" className="hero">
-      <Image
-        src="/photo/hero.jpg"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="hero-bg"
-      />
+      {/* ART DIRECTION, ne jedna slika u dva kadra.
+          Uspravni telefon i siroki desktop dobivaju RAZLICITE FOTOGRAFIJE, jer
+          `cover` na uspravnom kadru prikaze punu visinu i samo ~29 % sirine —
+          subjekt se gubi ma koji `object-position` stavili.
+
+          <picture> umjesto next/image: next/image ne radi art direction, a dva
+          <Image> elementa s CSS prekidacem skinu OBA. Ovako se skine tocno
+          jedan. Datoteke su vec pripremljene na tocne dimenzije
+          (`scripts/hero-assets.mjs`), pa optimizator nema sto dodati.
+          `display: contents` na <picture> pusta <img> da se pozicionira prema
+          sekciji. */}
+      <picture className="hero-pic">
+        <source media="(min-width: 48rem)" srcSet="/photo/hero-wide.jpg" />
+        <img
+          src="/photo/hero-tall.jpg"
+          alt=""
+          className="hero-bg"
+          fetchPriority="high"
+          decoding="async"
+          width={820}
+          height={1756}
+        />
+      </picture>
       <div className="hero-scrim" />
 
       <div className="wrap hero-in">

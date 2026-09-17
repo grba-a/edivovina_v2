@@ -140,15 +140,19 @@
   background: var(--color-ink);
 }
 
-/* KADRIRANJE, ne samo osvjetljenje.
-   Fotografija je vodoravna (1920x1195), a mobilni hero je uspravan, pa `cover`
-   reze usku traku. Na `50% 40%` je ta traka padala na neizostren zid u sredini
-   gore — i slika se citala kao da je nema, iako je ucitana.
-   Sadrzaj (obrasla amfora, kutije, kamenice) je u LIJEVOJ i DONJOJ polovici,
-   pa uspravni kadar mora gledati tamo. */
+/* `display: contents` — <picture> ne pravi vlastiti okvir, pa se <img>
+   pozicionira prema `.hero`. */
+.hero-pic { display: contents; }
+
 .hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  object-position: 30% 50%;
+  /* Svaki kadar ima svoju sliku, pa kadriranje vise ne mora spasavati
+     pogresan format — samo blago tezi prema subjektu. */
+  object-position: 50% 42%;
   z-index: 0;
 }
 
@@ -168,10 +172,11 @@
   z-index: 1;
   background: linear-gradient(
     0deg,
-    rgba(4, 13, 27, 0.88) 0%,
-    rgba(4, 13, 27, 0.62) 18%,
-    rgba(4, 13, 27, 0.12) 38%,
-    rgba(4, 13, 27, 0) 56%
+    rgba(4, 13, 27, 0.94) 0%,
+    rgba(4, 13, 27, 0.86) 22%,
+    rgba(4, 13, 27, 0.55) 38%,
+    rgba(4, 13, 27, 0.16) 50%,
+    rgba(4, 13, 27, 0) 62%
   );
 }
 
@@ -207,7 +212,14 @@
 }
 .hero-title span:last-child { color: var(--color-gold); font-style: italic; }
 
-.hero-brand { line-height: 0; }
+/* CEP I MRLJA OD VINA SU IZVAN HEROJA, na oba kadra.
+   To je njihov brend element (`edivo-1.png`) i imao je smisla dok je hero bio
+   prazna tamna fotografija — nosio je kadar. Otkad hero nosi pravu sliku
+   (obrasle amfore na rivi, zaljev), taj sloj se s njom tuce: na telefonu je
+   stajao izmedu naslova i potpisa i gurao naslov u najbucniji dio kadra, a na
+   desktopu je lebdio preko amfora i barke.
+   Element nije izgubljen — cim se odluci gdje, ide u sekciju price. */
+.hero-brand { display: none; }
 .hero-bottles { width: min(18rem, 62%); height: auto; }
 
 .hero-tag {
@@ -226,8 +238,7 @@
 
 @media (min-width: 48rem) {
   .hero { min-height: 100svh; padding-block: 10rem var(--s-9); }
-  /* Sirok kadar uzima gotovo cijelu sliku, pa se smije vratiti na sredinu. */
-  .hero-bg { object-position: 42% 50%; }
+  .hero-bg { object-position: 50% 58%; }
   .hero-bottles { width: min(26rem, 46%); }
 }
 
