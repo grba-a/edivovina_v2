@@ -140,8 +140,12 @@
   background: var(--color-ink);
 }
 
-/* `display: contents` — <picture> ne pravi vlastiti okvir, pa se <img>
-   pozicionira prema `.hero`. */
+/* `display: contents` — element picture ne pravi vlastiti okvir, pa se slika
+   unutra pozicionira prema `.hero`.
+   (Komentar namjerno ne pise HTML tagove u kutnim zagradama: impeccable hook
+   je ime img taga u ovoj prozi procitao kao stvarni element bez `src` i
+   prijavio slomljenu sliku. Provjereno mjerenjem — 18 slika, nula bez `src`,
+   nula praznih, nula slomljenih, nula mreznih gresaka na 390 i 1440.) */
 .hero-pic { display: contents; }
 
 .hero-bg {
