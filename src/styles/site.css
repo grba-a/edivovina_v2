@@ -183,8 +183,16 @@
   inset-inline-end: var(--gutter);
   line-height: 0;
   pointer-events: none;
+  /* Sirina ide NA OVAJ okvir, ne na sliku. Apsolutni okvir bez zadane sirine
+     je shrink-to-fit, pa se postotak na djetetu vrti u krug: mjerili smo
+     174 px i kad je trazeno 240.
+
+     Treci clan `min()` je kapa po VISINI kadra, i nije ukras: na 360x640
+     hero je nizak, naslov sjedne vise, i cep na 62 % sirine mu je ulazio u
+     prvi red. `svh` ga na kratkim ekranima sam smanji. */
+  width: min(15rem, 62%, 30svh);
 }
-.hero-bottles { width: min(11rem, 46%); height: auto; }
+.hero-bottles { width: 100%; height: auto; }
 
 /* NA MOBITELU GA NEMA — Petar, 2026-09-18.
    Hero na telefonu nosi samo naslov i dva gumba, da se fotografija vidi.
@@ -209,22 +217,28 @@
 @media (min-width: 48rem) {
   .hero { min-height: 100svh; padding-block: 10rem var(--s-9); }
   .hero-tag { display: block; }
-  /* Natrag u tok: na sirokom kadru cep sjedi u svom stupcu, ne lebdi. */
-  .hero-brand { position: static; inset: auto; }
-  .hero-bottles { width: min(26rem, 46%); }
+  /* Cep OSTAJE gore desno i na sirokom kadru — Petar, 2026-09-18. Prije je
+     tu sjedao u drugi stupac grida i lebdio uz naslov. */
+  .hero-brand { inset-block-start: 7rem; width: min(20rem, 34%); }
 }
 
 @media (min-width: 62.5rem) {
-
+  /* DVA STUPCA U ISTOJ RAVNINI — Petar, 2026-09-18.
+     Naslov lijevo, opis desno, oba u istom redu; gumbi ispod naslova.
+     `align-items: end` poravnava opis prema DNU reda, pa mu zadnji red
+     teksta sjedne uz zadnji red naslova, a ne uz njegov vrh.
+     `minmax(0, ...)` je namjerno: bez nule kao minimumom dugi naslov ne bi
+     dao stupcu da se skupi i raspored bi prelio. */
   .hero-in {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
     align-items: end;
-    gap: var(--s-7);
+    column-gap: var(--s-8);
+    row-gap: var(--s-6);
   }
-  .hero-title { grid-column: 1; }
-  .hero-tag { grid-column: 1; }
-  .hero-brand { grid-column: 2; grid-row: 1 / span 2; }
-  .hero-bottles { width: 24rem; }
+  .hero-title { grid-column: 1; grid-row: 1; }
+  .hero-tag { grid-column: 2; grid-row: 1; max-width: 34ch; }
+  .hero-ctas { grid-column: 1; grid-row: 2; }
+  .hero-brand { inset-block-start: 7.5rem; width: min(24rem, 27%); }
 }
 
 /* ----------------------------------------------------------- zaglavlja sekcija */
