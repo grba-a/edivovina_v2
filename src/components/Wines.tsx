@@ -1,28 +1,36 @@
 import Image from 'next/image'
-import { WINES } from '@/data/wines'
+import { HOME_WINES, WINES } from '@/data/wines'
 import { money } from '@/lib/money'
 import { LANE_NARROW } from '@/lib/stage'
 
 /**
- * Katalog. PREDLOZAK, ne trgovina — Petar je 2026-09-15 odlucio da gumbi
- * ostanu inertni i da se katalog prepise u WooCommerce. Zato `aria-disabled`
- * i <span>, ne <button>: nista ne obecava klik koji ne postoji.
+ * Katalog. PREDLOZAK, ne trgovina — gumbi ostaju inertni do prepisa u
+ * WooCommerce (odluka C).
  *
- * Mreza ne smije nositi bocnu traku (na 360 px bi kartica pala na ~90 px),
- * pa poza `wines` na uskom ekranu koristi gornju traku: amfora lebdi iznad
- * naslova, mala i daleka.
+ * ODLUKA D, Petar 2026-09-18: DVIJE kartice, ne osam. Osam je katalog, a
+ * katalog ne bira umjesto kupca nego ga ostavi pred osam odluka. Ovdje stoje
+ * prica (amfora, 382 EUR) i ulazna cijena (Dingac, 39 EUR); ostalih sest je
+ * na /shop.
+ *
+ * DOKAZ STOJI UZ CIJENU. Medalje su prije zivjele na dnu stranice, tisucama
+ * piksela od mjesta gdje se gleda cijena. Medalja pored 382 EUR radi posao;
+ * medalja na dnu ne radi nista.
+ *
+ * Bez eyebrow oznake: stranica ih je nosila pet na sedam sekcija, a gornja
+ * granica je jedna na tri. Naslov i dvije boce ispod njega su dovoljni.
  */
 export default function Wines() {
+  const rest = WINES.length - HOME_WINES.length
+
   return (
     <section data-act="wines" className={`section lane-${LANE_NARROW.wines}`} id="wines">
       <div className="wrap full">
         <div className="sec-head">
-          <p className="eyebrow">Shop</p>
           <h2>Navis Mysterium</h2>
         </div>
 
         <ul className="grid-wines">
-          {WINES.map((w) => (
+          {HOME_WINES.map((w) => (
             <li key={w.slug} className="wine">
               <a className="wine-shot" href={`/product/${w.slug}`} tabIndex={-1} aria-hidden>
                 <Image
@@ -30,7 +38,7 @@ export default function Wines() {
                   alt=""
                   width={600}
                   height={900}
-                  sizes="(min-width: 62.5rem) 22rem, (min-width: 48rem) 40vw, 45vw"
+                  sizes="(min-width: 62.5rem) 24rem, 45vw"
                   className="wine-img"
                 />
                 {w.undersea ? <span className="wine-flag">Undersea</span> : null}
@@ -41,6 +49,14 @@ export default function Wines() {
               </h3>
               <p className="wine-kind">{w.kind}</p>
 
+              {/* Nagrada UZ cijenu, ne na dnu stranice. */}
+              {w.award ? (
+                <p className="wine-award">
+                  <Image src={w.award.medal} alt="" width={22} height={22} />
+                  {w.award.label}
+                </p>
+              ) : null}
+
               <div className="wine-foot">
                 <span className="wine-price">{money(w.price)}</span>
                 <span className="btn" aria-disabled="true">
@@ -50,6 +66,13 @@ export default function Wines() {
             </li>
           ))}
         </ul>
+
+        <p className="wine-rest">
+          <a href="/shop">All {WINES.length} wines</a>
+          <span>
+            {rest} more, including the TRIS set and the sparkling Eros
+          </span>
+        </p>
       </div>
     </section>
   )

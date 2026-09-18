@@ -19,6 +19,21 @@ export type Wine = {
   undersea: boolean
   /** kratka oznaka tipa, iz njihovog kataloga; engleski, kao i ostatak weba */
   kind: string
+  /**
+   * Ide li na naslovnicu. Odluka D, Petar 2026-09-18: DVIJE, ne osam.
+   * Osam kartica je katalog, a katalog ne bira umjesto kupca. Ostalih sest
+   * zivi na /shop, gdje im je i mjesto.
+   */
+  home?: boolean
+  /**
+   * Nagrada koja stoji UZ CIJENU, ne na dnu stranice.
+   *
+   * Tekst i medalja su NJIHOVI, s njihovog weba (vidi `awards.ts`):
+   *   amfora i undersea boca -> America Wine Awards 2021, zlato
+   *   Dingac                 -> Decanter World Wine Awards, srebro
+   * Nijedna nagrada se ne pripisuje vinu koje je nije dobilo.
+   */
+  award?: { label: string; medal: string }
 }
 
 export const WINES: Wine[] = [
@@ -29,6 +44,8 @@ export const WINES: Wine[] = [
     photo: '/photo/p-undersea-amphora.jpg',
     undersea: true,
     kind: 'Amphora',
+    home: true,
+    award: { label: 'Gold, America Wine Awards 2021', medal: '/medal/gold.png' },
   },
   {
     slug: 'navis-mysterium-undersea-bottle',
@@ -69,6 +86,8 @@ export const WINES: Wine[] = [
     photo: '/photo/p-regular.jpg',
     undersea: false,
     kind: 'Dingač',
+    home: true,
+    award: { label: 'Silver, Decanter World Wine Awards', medal: '/medal/decanter.png' },
   },
   {
     slug: 'q-edivo',
@@ -87,6 +106,18 @@ export const WINES: Wine[] = [
     kind: 'Rosé',
   },
 ]
+
+/** Naslovnica nosi samo ove dvije: pricu (amfora) i ulaznu cijenu (Dingac). */
+export const HOME_WINES = WINES.filter((x) => x.home)
+
+/**
+ * STANJE ZALIHA I DOSTAVA NAMJERNO NISU NA KARTICI.
+ *
+ * Njihova stara product stranica ima oboje, i to je prava prednost koju nasa
+ * naslovnica jos ne nosi. Ali ja te podatke NE ZNAM: postarina, rok i zaliha
+ * moraju doci od klijenta. Izmisljena zaliha („Na stanju") na kartici od
+ * 382 EUR je tvrdnja, ne ukras, i zato je ovdje nema.
+ */
 
 /**
  * TRAP iz v3, prenesena: fotografija za TRIS pokazuje JEDNU bocu Erosa, ne set

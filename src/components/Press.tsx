@@ -14,8 +14,10 @@ export default function Press() {
   return (
     <section data-act="press" className={`section on-cream lane-${LANE_NARROW.press}`}>
       <div className="wrap">
+        {/* Bez eyebrow oznake: „Press" nad naslovom „News & stories" ne dodaje
+            nista sto naslov vec ne kaze. Stranica ih je nosila pet na sedam
+            sekcija, a granica je jedna na tri. */}
         <div className="sec-head">
-          <p className="eyebrow">Press</p>
           <h2>News &amp; stories</h2>
         </div>
 

@@ -13,8 +13,10 @@ export default function Trophies() {
   return (
     <section data-act="trophies" className={`section lane-${LANE_NARROW.trophies}`}>
       <div className="wrap full">
+        {/* Bez eyebrow oznake, isto: „Awards" nad „Wine trophies" je isto
+            dvaput. Ostaju samo dvije na stranici, „Peljesac" i „Our mission",
+            jer one imenuju mjesto i temu koje naslov ne nosi. */}
         <div className="sec-head">
-          <p className="eyebrow">Awards</p>
           <h2>Wine trophies</h2>
         </div>
 

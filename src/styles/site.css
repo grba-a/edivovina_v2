@@ -235,7 +235,11 @@
     column-gap: var(--s-8);
     row-gap: var(--s-6);
   }
-  .hero-title { grid-column: 1; grid-row: 1; }
+  /* Naslov se u dva stupca mjeri po SVOM stupcu, ne po kadru.
+     Na 1000 px je stupac 462 px, a `7vw` daje 70 px — izmjereno CETIRI reda.
+     Cetveroredni hero naslov je greska u velicini fonta, ne u duzini teksta,
+     pa se u ovom rasponu skala smanji da ostane na tri. */
+  .hero-title { grid-column: 1; grid-row: 1; font-size: clamp(2.5rem, 5vw, 4.5rem); }
   .hero-tag { grid-column: 2; grid-row: 1; max-width: 34ch; }
   .hero-ctas { grid-column: 1; grid-row: 2; }
   .hero-brand { inset-block-start: 7.5rem; width: min(24rem, 27%); }
@@ -353,6 +357,38 @@
   color: rgba(250, 246, 240, 0.5);
 }
 
+/* DOKAZ UZ CIJENU. Medalja je mala namjerno: ona potvrdjuje cijenu, ne
+   konkurira joj. Slika nosi `alt=""` jer tekst pored nje kaze isto. */
+.wine-award {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: var(--t-label);
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  color: var(--color-gold);
+}
+.wine-award img { width: 1.15rem; height: auto; flex: none; opacity: 0.9; }
+
+.wine-rest {
+  margin-block-start: var(--s-7);
+  display: grid;
+  gap: var(--s-1);
+  max-width: none;
+}
+.wine-rest a {
+  font-size: var(--t-small);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  text-decoration: none;
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+}
+.wine-rest span { font-size: var(--t-small); color: rgba(250, 246, 240, 0.55); }
+
 .wine-foot {
   margin-block-start: auto;
   display: flex;
@@ -377,11 +413,15 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* ODLUKA D: dvije kartice. Stupaca je tocno dva na SVAKOJ sirini — pravilo
+   za tri ili cetiri stupca bi s dvije kartice ostavilo prazne celije, a
+   prazna celija u mrezi znaci da je mreza pogresno planirana. Kapa sirine
+   drzi kartice u razumnoj velicini na velikom ekranu. */
 @media (min-width: 48rem) {
-  .grid-wines { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-7) var(--s-5); }
+  .grid-wines { gap: var(--s-7) var(--s-6); max-width: 46rem; }
 }
 @media (min-width: 62.5rem) {
-  .grid-wines { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .grid-wines { max-width: 54rem; gap: var(--s-8) var(--s-7); }
   .wine-foot { flex-direction: row; align-items: center; justify-content: space-between; }
 }
 
