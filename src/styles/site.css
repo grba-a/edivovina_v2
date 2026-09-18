@@ -140,66 +140,18 @@
   background: var(--color-ink);
 }
 
-/* `display: contents` — element picture ne pravi vlastiti okvir, pa se slika
-   unutra pozicionira prema `.hero`.
-   (Komentar namjerno ne pise HTML tagove u kutnim zagradama: impeccable hook
-   je ime img taga u ovoj prozi procitao kao stvarni element bez `src` i
-   prijavio slomljenu sliku. Provjereno mjerenjem — 18 slika, nula bez `src`,
-   nula praznih, nula slomljenih, nula mreznih gresaka na 390 i 1440.) */
-.hero-pic { display: contents; }
+.hero-bg { object-fit: cover; object-position: 50% 40%; z-index: 0; }
 
-.hero-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  /* Svaki kadar ima svoju sliku, pa kadriranje vise ne mora spasavati
-     pogresan format — samo blago tezi prema subjektu. */
-  object-position: 50% 42%;
-  z-index: 0;
-}
-
-/* ZASTOR NIJE POTENCIOMETAR.
-   Prva verzija je imala i gornji sloj (0,55) i donji do 52 % visine, i to je
-   na ovoj fotografiji (luma 13/255 prije gradea) ugusilo sliku u tamnu mrlju
-   — sto se i vidjelo na produkciji.
-
-   Dvije promjene, obje u smjeru SLABIJEG zastora:
-   - gornjeg sloja vise nema. Header je dobio punu podlogu, pa gornji zastor
-     nista ne stiti, samo je tamnio nebo fotografije.
-   - donji je jaci ali KRATAK: stiti samo pojas u kojem stoji tekst i pusti
-     gornje dvije trecine kadra cistima. */
+/* Zastor je tezi PRI DNU, ne ravnomjeran: ravnomjerni zastor zadovolji
+   kontrast i ubije fotografiju. */
 .hero-scrim {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(
-    0deg,
-    rgba(4, 13, 27, 0.94) 0%,
-    rgba(4, 13, 27, 0.86) 22%,
-    rgba(4, 13, 27, 0.55) 38%,
-    rgba(4, 13, 27, 0.16) 50%,
-    rgba(4, 13, 27, 0) 62%
-  );
+  background:
+    linear-gradient(180deg, rgba(4, 13, 27, 0.55) 0%, rgba(4, 13, 27, 0) 34%),
+    linear-gradient(0deg, rgba(4, 13, 27, 0.92) 0%, rgba(4, 13, 27, 0.15) 52%);
 }
-
-/* KOMPAS JE OBUSTAVLJEN — Petar, 2026-09-16. Nista se na stranici ne vrti.
-
-   Zasto nije uspio, da se ne pokusava treci put: njihov PNG
-   (`header-level-2.png`) je svjetla grafika (prosjek RGB 213) ali s vlastitom
-   alfom od samo 50/255 — dakle vec ~80 % prozirna. Preko toga je isao nas
-   `opacity: 0.5` i dva tamna sloja zastora heroja, pa je od svjetlih prstena
-   ostalo oko 10 % na tamnoj fotografiji. Vrtnja je cijelo vrijeme radila
-   (izmjereno u WebKitu: 903 ms napretka u 900 ms), samo se vrtjelo nesto
-   sto se ne vidi.
-
-   Da se ikad vraca: PNG treba presvijetliti ili mu dici alfu, a zastor
-   heroja oslabiti ispod kompasa — ne dizati `opacity` preko 0,5, jer to
-   pojede fotografiju.
-
-   Datoteka ostaje u `public/texture/` (ne posluzuje se jer je nitko ne
-   referencira), zajedno s `pattern-light.png` koji takoder nije u upotrebi. */
 
 .hero-in {
   position: relative;
@@ -216,14 +168,7 @@
 }
 .hero-title span:last-child { color: var(--color-gold); font-style: italic; }
 
-/* CEP I MRLJA OD VINA SU IZVAN HEROJA, na oba kadra.
-   To je njihov brend element (`edivo-1.png`) i imao je smisla dok je hero bio
-   prazna tamna fotografija — nosio je kadar. Otkad hero nosi pravu sliku
-   (obrasle amfore na rivi, zaljev), taj sloj se s njom tuce: na telefonu je
-   stajao izmedu naslova i potpisa i gurao naslov u najbucniji dio kadra, a na
-   desktopu je lebdio preko amfora i barke.
-   Element nije izgubljen — cim se odluci gdje, ide u sekciju price. */
-.hero-brand { display: none; }
+.hero-brand { line-height: 0; }
 .hero-bottles { width: min(18rem, 62%); height: auto; }
 
 .hero-tag {
@@ -242,7 +187,6 @@
 
 @media (min-width: 48rem) {
   .hero { min-height: 100svh; padding-block: 10rem var(--s-9); }
-  .hero-bg { object-position: 50% 58%; }
   .hero-bottles { width: min(26rem, 46%); }
 }
 
