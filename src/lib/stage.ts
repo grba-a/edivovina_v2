@@ -24,7 +24,7 @@
 
 export type Lane = 'l' | 'r' | 't' | 0
 
-export type Act = 'hero' | 'story' | 'wines' | 'press' | 'trophies' | 'footer'
+export type Act = 'hero' | 'story' | 'viewer' | 'wines' | 'press' | 'trophies' | 'footer'
 
 export type Pose = {
   /** vodoravno, kao razmjer POLUSIRINE kadra: -1 lijevi rub, +1 desni */
@@ -65,6 +65,10 @@ export type Pose = {
 const WIDE: Record<Act, Pose> = {
   hero:     { x:  0.00, y: -0.10, z: 1.00, tilt: -24, o: 0,    lane: 0   },
   story:    { x:  0.62, y:  0.16, z: 1.35, tilt:   8, o: 1,    lane: 'r' },
+  /* PRIKAZ PROIZVODA. Predmet stane u sredinu, uspravno, velik. Ovo je jedina
+     poza u kojoj korisnik preuzima kontrolu — vrtnja se gasi, a `x`/`y` su na
+     nuli jer je predmet sada subjekt, ne ukras uz tekst. */
+  viewer:   { x:  0.00, y: -0.04, z: 1.60, tilt:   0, o: 1,    lane: 0   },
   wines:    { x: -0.86, y: -0.34, z: 0.34, tilt: -14, o: 0,    lane: 0   },
   press:    { x:  0.48, y: -0.34, z: 2.10, tilt:  17, o: 1,    lane: 'r' },
   trophies: { x: -0.80, y: -0.30, z: 0.32, tilt:  -6, o: 0,    lane: 0   },
@@ -83,6 +87,7 @@ const WIDE: Record<Act, Pose> = {
 const NARROW: Record<Act, Pose> = {
   hero:     { x:  0.00, y:  0.30, z: 0.70, tilt: -18, o: 0,    lane: 0   },
   story:    { x:  0.52, y:  0.30, z: 0.80, tilt:   8, o: 1,    lane: 'r' },
+  viewer:   { x:  0.00, y: -0.06, z: 1.05, tilt:   0, o: 1,    lane: 0   },
   wines:    { x: -0.72, y: -0.34, z: 0.30, tilt: -14, o: 0,    lane: 0   },
   press:    { x:  0.44, y: -0.30, z: 1.25, tilt:  16, o: 1,    lane: 'r' },
   trophies: { x: -0.68, y: -0.30, z: 0.28, tilt:  -6, o: 0,    lane: 0   },
@@ -94,12 +99,14 @@ const NARROW: Record<Act, Pose> = {
  * Mijenja se samo na resizeu preko breakpointa, nikad u scrollu.
  */
 export const LANE_NARROW: Record<Act, Lane> = {
-  hero: NARROW.hero.lane, story: NARROW.story.lane, wines: NARROW.wines.lane,
-  press: NARROW.press.lane, trophies: NARROW.trophies.lane, footer: NARROW.footer.lane,
+  hero: NARROW.hero.lane, story: NARROW.story.lane, viewer: NARROW.viewer.lane,
+  wines: NARROW.wines.lane, press: NARROW.press.lane,
+  trophies: NARROW.trophies.lane, footer: NARROW.footer.lane,
 }
 export const LANE_WIDE: Record<Act, Lane> = {
-  hero: WIDE.hero.lane, story: WIDE.story.lane, wines: WIDE.wines.lane,
-  press: WIDE.press.lane, trophies: WIDE.trophies.lane, footer: WIDE.footer.lane,
+  hero: WIDE.hero.lane, story: WIDE.story.lane, viewer: WIDE.viewer.lane,
+  wines: WIDE.wines.lane, press: WIDE.press.lane,
+  trophies: WIDE.trophies.lane, footer: WIDE.footer.lane,
 }
 
 /** Ista granica kao u CSS-u (`--bp-wide`). Ako se mijenja, mijenja se na oba mjesta. */
@@ -116,9 +123,19 @@ export type Stage = Pose & {
    * sekcije.
    */
   settle: number
+  /**
+   * Koliko je predmet SJEO: 1 u footeru (kovani stalak) i 1 u prikazu
+   * proizvoda. Gasi vrtnju, jer predmet koji korisnik drzi prstom ili koji
+   * lezi u stalku ne smije se sam okretati.
+   */
+  hold: number
+  /** Rucni zamah oko osi Y, u radijanima. Puni ga hvatiste u sekciji prikaza. */
+  dragY: number
+  /** Rucni nagib gore-dolje, u radijanima, stisnut da se predmet ne prevrne. */
+  dragX: number
 }
 
-const state: Stage = { ...NARROW.hero, act: 'hero', settle: 0 }
+const state: Stage = { ...NARROW.hero, act: 'hero', settle: 0, hold: 0, dragY: 0, dragX: 0 }
 export const getStage = (): Stage => state
 
 let raf = 0
@@ -193,12 +210,27 @@ const measure = () => {
   const heading = !here && (nextEl.dataset.act as Act) === 'footer'
   state.settle = here ? 1 : heading ? e : 0
 
+  /* Vrtnja se gasi i u prikazu proizvoda, ne samo u footeru. */
+  const inViewer = state.act === 'viewer'
+  const toViewer = !inViewer && (nextEl.dataset.act as Act) === 'viewer'
+  state.hold = Math.max(state.settle, inViewer ? 1 : toViewer ? e : 0)
+
   const root = document.documentElement
   root.style.setProperty('--amph-o', state.o.toFixed(3))
   /* Providan canvas i dalje kompozitira preko cijelog kadra. Kroz shop i
      nagrade je to dvije duge sekcije besplatnog posla za GPU, pa se sloj tu
      gasi. `visibility` ne dira raspored, pa ne budi ResizeObserver. */
   root.dataset.amph = state.o < 0.01 ? 'off' : 'on'
+
+  /* Hvatiste se ukljucuje SAMO u sekciji prikaza. Canvas ostaje
+     `pointer-events: none` uvijek — da mu ih upalimo, fiksni sloj preko
+     cijelog kadra pojeo bi dodire i po ostatku stranice. */
+  root.dataset.grab = inViewer ? 'on' : 'off'
+
+  /* Traka za kupnju: nema je u heroju (tamo su vlastiti gumbi) ni u footeru
+     (tamo bi sjela na kontakt i na predmet u stalku). Zamka je vec jednom
+     placena — vidi `floating-button-covers-cta` u vaultu. */
+  root.dataset.buybar = state.act === 'hero' || state.act === 'footer' ? 'off' : 'on'
   root.dataset.lane = state.lane === 0 ? 'none' : state.lane
   root.dataset.stageAct = state.act
 
@@ -207,6 +239,21 @@ const measure = () => {
 
 const request = () => {
   if (!raf) raf = requestAnimationFrame(measure)
+}
+
+/**
+ * Rucni zamah iz sekcije prikaza.
+ *
+ * Ne ide kroz React state: to bi bio re-render na svaki pokret prsta i na
+ * mobitelu bi se raspalo. Pise se u isti modul-store koji `Mesh` ionako cita
+ * po frameu, i javlja `stage` event da se 'demand' frameloop probudi.
+ */
+export function nudge(dx: number, dy: number) {
+  state.dragY += dx
+  /* Nagib je stisnut na +-0,4 rad (~23 stupnja): predmet se smije nakloniti,
+     ali se ne smije prevrnuti na glavu. */
+  state.dragX = Math.max(-0.4, Math.min(0.4, state.dragX + dy))
+  window.dispatchEvent(new Event('stage'))
 }
 
 let ro: ResizeObserver | null = null

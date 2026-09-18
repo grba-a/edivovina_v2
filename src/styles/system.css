@@ -218,6 +218,23 @@ p { margin: 0; max-width: var(--measure); }
   transition: opacity 420ms var(--ease-out);
 }
 
+/* `pointer-events: none` NA RODITELJU NIJE DOSTA.
+   react-three-fiber postavlja `pointer-events: auto` INLINE na canvas i na
+   svoje dvije omotnice, a potomak koji sam postavi `auto` se i dalje moze
+   pogoditi — nasljedivanje ga ne gasi. Inline stil pobjeduje stylesheet, pa
+   ovdje treba `!important`.
+   Sto je to znacilo: canvas je fiksan preko cijelog kadra na z-index 5, a
+   sadrzaj je ispod njega. Izmjereno u WebKitu 2026-09-18 — blokirao je „Read
+   more" u prici, clanke u pressu, navigaciju u footeru i hvatiste u prikazu
+   proizvoda. Radili su samo header (z 20), traka za kupnju (z 18) i hero,
+   gdje je canvas `visibility: hidden` pa nije pogodiv.
+   Unutar canvasa nam dodiri ne trebaju NIKAD: prikaz proizvoda ih hvata
+   zasebnim elementom u DOM-u (`.view-stage`), koji je susjed, ne dijete. */
+.amph-canvas,
+.amph-canvas * {
+  pointer-events: none !important;
+}
+
 /* Kroz shop i nagrade predmeta nema. Sloj se gasi tek kad prijelaz zavrsi,
    inace bi `visibility` odrezao samo blijedenje. */
 :root[data-amph='off'] .amph-canvas {

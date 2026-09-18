@@ -518,3 +518,207 @@
   .ftr-nav { grid-template-columns: 1fr; gap: var(--s-3); }
   .ftr-plinth { height: min(24rem, 36svh); }
 }
+
+
+/* ============================================================================
+   ODLUKE A, B i C — Petar, 2026-09-18
+   ========================================================================= */
+
+/* ---------------------------------------------------- gumbi u heroju (A, C) */
+
+.hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-block-start: var(--s-5);
+}
+.hero-ctas .btn { flex: 1 1 auto; min-width: 9.5rem; justify-content: center; }
+
+/* Ispunjen gumb je PRIMARNI, i na stranici ga smije biti samo jedan po kadru. */
+.btn-solid {
+  background: var(--color-gold);
+  color: var(--color-ink);
+  border-color: var(--color-gold);
+}
+
+/* Pritisak se mora osjetiti. 160 ms, ease-out, samo `transform` — ni jedno
+   svojstvo rasporeda. */
+.btn { transition: background var(--t-ui) var(--ease-out), color var(--t-ui) var(--ease-out), transform 160ms var(--ease-out); }
+.btn:active { transform: scale(0.97); }
+.btn[aria-disabled='true']:active { transform: none; }
+
+/* Hover iza upita za pokazivac: dodirni ekrani inace pale hover na tap i
+   gumb ostane „upaljen" nakon dodira. */
+@media (hover: hover) and (pointer: fine) {
+  .btn-solid:hover { background: var(--color-cream); border-color: var(--color-cream); color: var(--color-ink); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:active { transform: none; }
+}
+
+/* ------------------------------------------------ prikaz proizvoda (B) */
+
+.view {
+  background: linear-gradient(180deg, var(--color-ink) 0%, #071A2B 46%, var(--color-ink) 100%);
+  border-block: 1px solid var(--color-hairline);
+  /* Mjesta za traku za kupnju. Bez ovoga je traka sjela na drugu tocku
+     („The cradle") — tocno zamka `floating-button-covers-cta` iz vaulta,
+     placena jednom i nema je smisla platiti drugi put. */
+  padding-block-end: calc(var(--sec-y) + 4rem);
+}
+.view-title {
+  font-size: var(--t-h2);
+  max-width: 26ch;
+}
+.view-lede {
+  margin-block-start: var(--s-4);
+  font-size: var(--t-lead);
+  color: rgba(250, 246, 240, 0.72);
+  max-width: 44ch;
+}
+
+/* POZORNICA. Prazna je namjerno — predmet lebdi u fiksnom canvasu iznad
+   stranice, pa mu se ne moze „uliti" u tok, samo ostaviti prostor.
+
+   `touch-action: pan-y` je bitan: da je `none`, korisnik ne bi mogao
+   PROSKROLATI preko ove sekcije na telefonu, jer bi joj okomiti potez ostao
+   zarobljen. Ovako okomito ostaje skrol, a vodoravni potez okrece predmet. */
+.view-stage {
+  margin-block-start: var(--s-6);
+  height: min(22rem, 52svh);
+  touch-action: pan-y;
+  cursor: grab;
+  position: relative;
+  display: grid;
+  place-items: end center;
+}
+.view-stage:active { cursor: grabbing; }
+.view-stage:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 6px; }
+
+/* Uputa. Gasi se nakon prvog dodira i ne vraca se: uputa koja stoji zauvijek
+   je ukras, ne pomoc. Drag-to-rotate NIJE ocito, pa prvi put zasluzuje rijec
+   — za razliku od skrola, koji svi znaju i koji se zato nikad ne oznacava. */
+.view-hint {
+  font-size: var(--t-label);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: rgba(250, 246, 240, 0.55);
+  border: 1px solid var(--color-hairline);
+  border-radius: 99px;
+  padding: var(--s-2) var(--s-4);
+  background: rgba(4, 13, 27, 0.6);
+  transition: opacity 220ms var(--ease-out);
+}
+.view-stage[data-touched='yes'] .view-hint { opacity: 0; }
+
+.view-spots {
+  margin: var(--s-7) 0 var(--s-6);
+  display: grid;
+  gap: var(--s-5);
+}
+.view-spots dt {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: var(--t-h3);
+  color: var(--color-cream);
+}
+.view-spots dd {
+  margin: var(--s-2) 0 0;
+  font-size: var(--t-small);
+  color: rgba(250, 246, 240, 0.62);
+  max-width: 46ch;
+}
+/* Broj je ISTI broj koji stoji na predmetu, pa nosi informaciju, ne ukras. */
+.view-n {
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  border: 1px solid var(--color-gold);
+  color: var(--color-gold);
+  font-family: var(--font-sans), sans-serif;
+  font-size: var(--t-small);
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 48rem) {
+  .view-stage { height: min(30rem, 60svh); }
+  .view-spots { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-7); }
+}
+
+/* ------------------------------------------- traka za kupnju (C) */
+
+/* NIJE `position: sticky`. Sticky element ostaje u toku, pa se s herojem
+   skrola umjesto da ga pokrije. Fiksna je, a KAD je vidljiva odlucuje
+   pozornica kroz `data-buybar` — u heroju je nema (tamo su vlastiti gumbi),
+   u footeru je nema (tamo bi sjela na kontakt i na predmet u stalku). */
+.buybar {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 18;
+  background: rgba(7, 19, 34, 0.96);
+  border-block-start: 1px solid var(--color-hairline);
+  backdrop-filter: blur(8px);
+  padding-block-end: env(safe-area-inset-bottom, 0px);
+  transform: translateY(100%);
+  transition: transform 260ms var(--ease-out);
+}
+:root[data-buybar='on'] .buybar { transform: translateY(0); }
+
+/* Izlaz je brzi od ulaza: sustav odgovara, korisnik ne ceka. */
+:root[data-buybar='off'] .buybar { transition-duration: 180ms; }
+
+.buybar-in {
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding: var(--s-3) var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+}
+.buybar-t { flex: 1; min-width: 0; }
+.buybar-t strong {
+  display: block;
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: var(--t-body);
+  color: var(--color-cream);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.buybar-t span {
+  display: block;
+  font-size: var(--t-small);
+  color: rgba(250, 246, 240, 0.6);
+  font-variant-numeric: tabular-nums;
+}
+.buybar-go {
+  flex: none;
+  min-height: 2.75rem;
+  display: grid;
+  place-items: center;
+  padding-inline: var(--s-5);
+  background: var(--color-gold);
+  color: var(--color-ink);
+  font-size: var(--t-small);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 160ms var(--ease-out);
+}
+.buybar-go:active { transform: scale(0.97); }
+
+@media (prefers-reduced-motion: reduce) {
+  .buybar { transition: none; }
+  .buybar-go:active { transform: none; }
+}

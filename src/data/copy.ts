@@ -20,27 +20,65 @@ export const HERO = {
   title: ['The unique', 'essence of the', 'Adriatic sea'],
 
   /**
-   * ODSTUPANJE OD ODLUKE D (doslovno njihov tekst). Klijent je 2026-09-16
-   * preko Petra trazio da ovdje stoji ime vinarije, a ne ime proizvoda.
+   * ODLUKA A, Petar 2026-09-18: njihov naslov ostaje, a ISPOD njega ide
+   * recenica koja radi posao. Time odustajemo od odluke D (doslovno njihov
+   * tekst) na tocno jednom mjestu — u heroju. Ostatak stranice ostaje njihov.
    *
-   * Ime je na engleskom „Edivo Wines", ne „Edivo Vina" — web je engleski, a
-   * „vina" je hrvatska rijec. Firma se pravno zove Edivo Vina d.o.o. i tako
-   * stoji u footeru, ali u tekstu stranice ide engleski oblik.
+   * Zasto: njihova recenica („is the result of intelligent effort with the
+   * touch of tradition") ne kaze STO je to, ZASTO je drugacije ni STO kosta.
+   * Stranac na telefonu ima desetak sekundi volje.
    *
-   * Recenica ISPOD imena ostaje njihova, rijec po rijec — mijenja se samo
-   * kome je pripisana. Tako promjena ne unosi nijednu novu tvrdnju.
+   * SVE TRI TVRDNJE OVDJE SU PROVJERENE (vidi `~/vault/30-Clients/edivo-vina.md`):
+   *   700 dana pod morem  — potvrdeno, koriste ga i oni sami
+   *   14-16 C             — potvrdeno
+   *   prvi u Hrvatskoj    — potvrdeno iz pet izvora
+   * „First in the world" NE SMIJE ovdje: baskijski Crusoe Treasure je pod
+   * morem od 2010., a patent za podmorsko dozrijevanje prijavljen 2007.
    *
-   * Zamjene koje je Petar trazio kao izbor (promijeni `tagline`, nista drugo):
-   *   a) 'is the result of intelligent effort with the touch of tradition'
-   *      -> njihova recenica, sada pod imenom vinarije. TRENUTNO AKTIVNA.
-   *   b) 'the first winery in Croatia to age its wine on the seabed'
-   *      -> "prvi u Hrvatskoj" je jedina tvrdnja o prvenstvu koja je prosla
-   *         provjeru iz pet izvora; "first in the world" NE SMIJE ovdje.
-   *   c) 'wine that spends more than 700 days under the Adriatic'
-   *      -> 700 dana je potvrdeno, pa i ovo stoji bez rizika.
+   * Njihova stara recenica ostaje ovdje da se vrati u jednoj liniji:
+   *   tagline: 'is the result of intelligent effort with the touch of tradition'
    */
   brand: 'Edivo Wines',
-  tagline: 'is the result of intelligent effort with the touch of tradition',
+  tagline:
+    'Red wine that spends 700 days ageing on the Adriatic seabed, at 14-16 C. ' +
+    'The first in Croatia to do it.',
+
+  /* Dva gumba, dvije razlicite namjere: kupiti i razumjeti. Nikad dva gumba
+     iste namjere na istoj stranici. */
+  ctaPrimary: { label: 'See the wines', href: '/shop' },
+  ctaGhost: { label: "How it's made", href: '/about-us' },
+}
+
+/**
+ * PRIKAZ PROIZVODA (odluka B).
+ *
+ * Nema eyebrow oznake namjerno: stranica ih vec nosi pet na sedam sekcija, a
+ * gornja granica je jedna na tri. Naslov je dovoljan.
+ *
+ * Tocke na predmetu govore samo ono sto je provjereno. DUBINA je jedina
+ * mjera koja je u vaultu `assumed`, ne `verified` — njihov web sam sebi
+ * proturjeci (About 18-25 m, Visit Us 14 m), pa stoji dogovoreni kompromis
+ * „around 20 metres" i nista tocnije.
+ */
+export const VIEWER = {
+  title: 'This is what 700 days under the sea does to clay.',
+  lede:
+    'The amphora goes down sealed and comes up wearing the seabed. ' +
+    'Drag it to look around it.',
+  hint: 'Drag to turn',
+  spots: [
+    {
+      n: 1,
+      title: 'Oysters',
+      body: 'Grown on the clay while the wine aged. Every amphora surfaces with a different shell.',
+    },
+    {
+      n: 2,
+      title: 'The cradle',
+      body: 'Welded rebar held the amphora upright at around 20 metres. It surfaces calcified white.',
+    },
+  ],
+  cta: { label: 'See the wines', href: '/shop' },
 }
 
 export const STORY = {
@@ -74,7 +112,7 @@ export const MISSION = {
 /** Brojke koje su prosle provjeru u v3 i smiju stajati kao tvrdnja. */
 export const FACTS = [
   { value: '700+', label: 'days on the seabed' },
-  { value: '14–16', label: 'degrees, all year round', unit: 'C' },
+  { value: '14-16', label: 'degrees, all year round', unit: 'C' },
   { value: 'First', label: 'in Croatia' },
 ]
 

@@ -50,6 +50,17 @@ export default function Hero() {
         <p className="hero-tag rise rise-3">
           <strong>{HERO.brand}</strong> {HERO.tagline}
         </p>
+
+        {/* Prvi put da na naslovnici iznad preloma postoji put prema kupnji.
+            Dvije razlicite namjere: kupiti i razumjeti. */}
+        <div className="hero-ctas rise rise-3">
+          <a className="btn btn-solid" href={HERO.ctaPrimary.href}>
+            {HERO.ctaPrimary.label}
+          </a>
+          <a className="btn" href={HERO.ctaGhost.href}>
+            {HERO.ctaGhost.label}
+          </a>
+        </div>
       </div>
     </section>
   )

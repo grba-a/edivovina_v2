@@ -43,6 +43,8 @@ export default function Mesh({ rich, still }: { rich: boolean; still: boolean })
      s njom — a stalak stoji. */
   const stand = useRef<THREE.Group>(null)
   const settle = useRef(0)
+  /* `hold` je siri od `settle`: 1 i u footeru i u prikazu proizvoda. */
+  const hold = useRef(0)
   /* Materijal amfore se cita KROZ MESH REF, ne iz `useMemo` zatvarača.
      Klon iz GLB-a se mora napraviti jednom (nosi pecenu teksturu gline), ali
      mijenjati ga po frameu smije se samo preko refa — inace je to mutacija
@@ -112,19 +114,25 @@ export default function Mesh({ rich, still }: { rich: boolean; still: boolean })
 
     /* Koliko je predmet sjeo u stalak. Izgladeno, da se vrtnja ne zakoci
        naglo kad `stage` prijedje u footer. */
-    settle.current = lerp(settle.current, st.settle, snap ? 1 : Math.min(1, dt * 2.6))
+    const kSlow = snap ? 1 : Math.min(1, dt * 2.6)
+    settle.current = lerp(settle.current, st.settle, kSlow)
+    hold.current = lerp(hold.current, st.hold, kSlow)
     const sit = settle.current
 
     /* Spori tumble oko svoje osi — predmet u vodi nije montiran na stalak.
        Na 'demand' frameloopu se okrece po scrollu, sto je i dalje bolje od
        ukocenog predmeta.
 
-       U FOOTERU se gasi: tamo amfora sjedi u kovanom stalku, a predmet koji
-       lezi u stalku i pritom se vrti se cita kao greska, ne kao pokret. Vrtnja
-       zato slabi kako `settle` raste i stane kad je predmet na mjestu.
-       Da se vrati vrtnja i u stalku: skini `* (1 - sit)`. */
-    spin.current += (snap ? 0.006 : dt * 0.14) * (1 - sit)
-    g.rotation.y = spin.current
+       GASI SE NA DVA MJESTA: u footeru, gdje amfora sjedi u kovanom stalku, i
+       u prikazu proizvoda, gdje je korisnik drzi prstom. Predmet koji lezi u
+       stalku ili koji vuces rukom a pritom se sam vrti cita se kao greska.
+       Da se vrati vrtnja svugdje: skini `* (1 - hold.current)`. */
+    spin.current += (snap ? 0.006 : dt * 0.14) * (1 - hold.current)
+
+    /* Rucni zamah se DODAJE na vrtnju, ne zamjenjuje je: kad korisnik pusti i
+       ode dalje, predmet nastavi odande gdje ga je ostavio. */
+    g.rotation.y = spin.current + st.dragY
+    g.rotation.x = st.dragX
 
     const io = snap ? 1 : intro.current
     const bodyMat = body.current?.material as THREE.MeshStandardMaterial | undefined

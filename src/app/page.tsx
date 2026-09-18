@@ -1,9 +1,11 @@
 import Hero from '@/components/Hero'
 import Story from '@/components/Story'
+import Viewer from '@/components/Viewer'
 import Wines from '@/components/Wines'
 import Press from '@/components/Press'
 import Trophies from '@/components/Trophies'
 import Footer from '@/components/Footer'
+import BuyBar from '@/components/BuyBar'
 
 /**
  * Naslovnica. Redoslijed je NJIHOV, s edivovina.hr:
@@ -22,10 +24,15 @@ export default function Home() {
     <>
       <Hero />
       <Story />
+      {/* Redoslijed je pripovjedni: more i Peljesac (zasto), pa predmet koji je
+          iz tog mora izasao (sto), pa vina (kupi). Prikaz proizvoda stoji
+          neposredno nad cijenama, ne na dnu stranice. */}
+      <Viewer />
       <Wines />
       <Press />
       <Trophies />
       <Footer />
+      <BuyBar />
     </>
   )
 }
