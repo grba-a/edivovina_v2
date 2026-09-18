@@ -153,8 +153,13 @@
     linear-gradient(0deg, rgba(4, 13, 27, 0.92) 0%, rgba(4, 13, 27, 0.15) 52%);
 }
 
+/* BEZ `position: relative`.
+   Imao ga je, i zato je apsolutni cep bio pozicioniran prema OVOM elementu, a
+   ne prema heroju — a `.hero-in` sjedi na dnu kadra, pa je cep ispao na
+   top 582 px umjesto gore desno. Izmjereno na 390x844.
+   `z-index` i dalje radi: ovo je flex dijete `.hero`, a flex/grid djeca
+   slusaju z-index i bez `position`. */
 .hero-in {
-  position: relative;
   z-index: 2;
   display: grid;
   gap: var(--s-5);
@@ -168,10 +173,26 @@
 }
 .hero-title span:last-child { color: var(--color-gold); font-style: italic; }
 
-.hero-brand { line-height: 0; }
-.hero-bottles { width: min(18rem, 62%); height: auto; }
+/* Cep i mrlja od vina idu GORE DESNO i van toka, da fotografija ispod
+   naslova ostane otvorena. `position: absolute` prema `.hero`, koji je
+   `relative`. Ispod headera (77 px), pa `top` racuna i njega. */
+.hero-brand {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: 5.5rem;
+  inset-inline-end: var(--gutter);
+  line-height: 0;
+  pointer-events: none;
+}
+.hero-bottles { width: min(11rem, 46%); height: auto; }
 
+/* NA MOBITELU GA NEMA — Petar, 2026-09-18.
+   Hero na telefonu nosi samo naslov i dva gumba, da se fotografija vidi.
+   Brojke se NE gube: traka 700+ / 14-16 C / First in Croatia stoji odmah
+   ispod, u sekciji price, dakle jedan skrol dalje. Od tableta navise ima
+   prostora i potpis se vraca. */
 .hero-tag {
+  display: none;
   font-size: var(--t-lead);
   color: rgba(250, 246, 240, 0.86);
   max-width: 32ch;
@@ -187,6 +208,9 @@
 
 @media (min-width: 48rem) {
   .hero { min-height: 100svh; padding-block: 10rem var(--s-9); }
+  .hero-tag { display: block; }
+  /* Natrag u tok: na sirokom kadru cep sjedi u svom stupcu, ne lebdi. */
+  .hero-brand { position: static; inset: auto; }
   .hero-bottles { width: min(26rem, 46%); }
 }
 
