@@ -18,12 +18,21 @@ export default function AmphoraCanvas() {
   return (
     <div aria-hidden className="amph-canvas">
       <Canvas
-        dpr={rich ? [1, 1.5] : [1, 1]}
+        /* dpr 1 na mobitelu je bila greska, ne stednja. Telefon ima DPR 2-3, pa
+           se predmet crtao u trecini razlucivosti i razvlacio natrag — na
+           uredaju se doslovno vide pikseli. Chrome emulacija to ne pokazuje
+           jer slaze rezultat na Retina ekran laptopa, u prozorcicu.
+           Gornja granica 2: na DPR-3 telefonu je to cetvrtina fragmenata
+           naspram punog 3, a razlika prema 3 se na 6" ne vidi. */
+        dpr={rich ? [1, 1.5] : [1, 2]}
         /* Mobitel i reduced-motion crtaju samo kad se poza promijeni; desktop
            vrti trajni tumble. */
         frameloop={rich && !still ? 'always' : 'demand'}
         camera={{ position: [0, 0, 11], fov: 32 }}
-        gl={{ antialias: rich, alpha: true, powerPreference: 'high-performance' }}
+        /* Antialias i na mobitelu: silueta amfore je kosa krivulja preko
+           svijetle pozadine, a to je najgori slucaj za stepenice. Placa se
+           samo na kadrovima koje 'demand' stvarno nacrta. */
+        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
         onCreated={({ gl, invalidate }) => {
           gl.toneMapping = THREE.ACESFilmicToneMapping
           gl.toneMappingExposure = 1.05
