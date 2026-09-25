@@ -1,4 +1,4 @@
-import { STORIES } from '@/data/press'
+import { HOME_STORIES, storyHref } from '@/data/press'
 import { LANE_NARROW } from '@/lib/stage'
 
 /**
@@ -22,10 +22,10 @@ export default function Press() {
         </div>
 
         <ul className="press">
-          {STORIES.map((s) => (
-            <li key={s.title}>
-              <a href={s.href}>
-                <span className="press-outlet">{s.outlet}</span>
+          {HOME_STORIES.map((s) => (
+            <li key={s.slug}>
+              <a href={storyHref(s)}>
+                {s.outlet ? <span className="press-outlet">{s.outlet}</span> : null}
                 <span className="press-title">{s.title}</span>
                 <time dateTime={s.date} className="press-date">
                   {new Date(s.date).toLocaleDateString('en-GB', {

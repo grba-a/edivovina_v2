@@ -6,6 +6,7 @@ import Press from '@/components/Press'
 import Trophies from '@/components/Trophies'
 import Footer from '@/components/Footer'
 import BuyBar from '@/components/BuyBar'
+import Amphora from '@/components/amphora'
 
 /**
  * Naslovnica. Redoslijed je NJIHOV, s edivovina.hr:
@@ -22,6 +23,10 @@ import BuyBar from '@/components/BuyBar'
 export default function Home() {
   return (
     <>
+      {/* Amfora zivi SAMO ovdje, ne u layoutu: podstranice je ne nose.
+          Iznad sadrzaja je i ne prima klikove; mount tek nakon prvog painta,
+          jer LCP mora biti hero naslov iz cistog HTML-a. */}
+      <Amphora />
       <Hero />
       <Story />
       {/* Redoslijed je pripovjedni: more i Peljesac (zasto), pa predmet koji je

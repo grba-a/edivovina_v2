@@ -1,7 +1,6 @@
-import Image from 'next/image'
 import { HOME_WINES, WINES } from '@/data/wines'
-import { money } from '@/lib/money'
 import { LANE_NARROW } from '@/lib/stage'
+import WineCard from './WineCard'
 
 /**
  * Katalog. PREDLOZAK, ne trgovina — gumbi ostaju inertni do prepisa u
@@ -29,41 +28,11 @@ export default function Wines() {
           <h2>Navis Mysterium</h2>
         </div>
 
+        {/* Kartica je od 2026-09-24 zajednicka komponenta s /shop, da obrazac
+            postoji na jednom mjestu a ne u dvije kopije koje se raziđu. */}
         <ul className="grid-wines">
           {HOME_WINES.map((w) => (
-            <li key={w.slug} className="wine">
-              <a className="wine-shot" href={`/product/${w.slug}`} tabIndex={-1} aria-hidden>
-                <Image
-                  src={w.photo}
-                  alt=""
-                  width={600}
-                  height={900}
-                  sizes="(min-width: 62.5rem) 24rem, 45vw"
-                  className="wine-img"
-                />
-                {w.undersea ? <span className="wine-flag">Undersea</span> : null}
-              </a>
-
-              <h3 className="wine-name">
-                <a href={`/product/${w.slug}`}>{w.name}</a>
-              </h3>
-              <p className="wine-kind">{w.kind}</p>
-
-              {/* Nagrada UZ cijenu, ne na dnu stranice. */}
-              {w.award ? (
-                <p className="wine-award">
-                  <Image src={w.award.medal} alt="" width={22} height={22} />
-                  {w.award.label}
-                </p>
-              ) : null}
-
-              <div className="wine-foot">
-                <span className="wine-price">{money(w.price)}</span>
-                <span className="btn" aria-disabled="true">
-                  Add to cart
-                </span>
-              </div>
-            </li>
+            <WineCard key={w.slug} wine={w} />
           ))}
         </ul>
 

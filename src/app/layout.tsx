@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Libre_Baskerville, Raleway } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
-import Amphora from '@/components/amphora'
 
 /* Klijentovi fontovi, isti kao na njihovom webu. Kroz next/font, pa se
    posluzuju s naseg origina i ne nose FOUT s Google CDN-a. */
@@ -41,9 +40,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <Header />
-        {/* Amfora je IZNAD sadrzaja i ne prima klikove. Mount tek nakon
-            prvog painta — LCP mora biti hero naslov iz cistog HTML-a. */}
-        <Amphora />
+        {/* Amfora vise NIJE ovdje. Petar 2026-09-24: „amfora ne treba za
+            podstranice". U layoutu bi je nosila svaka ruta, pa bi /shop i
+            /contact placali 318 kB modela i cijeli three.js bez razloga.
+            Sada je mountana samo na naslovnici, u `app/page.tsx`. */}
         <main id="main">{children}</main>
       </body>
     </html>

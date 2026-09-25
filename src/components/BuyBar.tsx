@@ -1,37 +1,34 @@
-import { WINES } from '@/data/wines'
-import { money } from '@/lib/money'
-
 /**
- * LJEPLJIVA TRAKA ZA KUPNJU (odluka C, Petar 2026-09-18).
+ * PLUTAJUCI GUMB ZA KUPNJU (odluka C, Petar 2026-09-18).
  *
- * Na telefonu dosad nije postojao NIJEDAN put prema kupnji iznad preloma.
- * Ova traka znaci da kupac nikad nije dalje od jednog dodira od trgovine.
+ * Na telefonu nije postojao NIJEDAN put prema kupnji iznad preloma. Ovo znaci
+ * da kupac nikad nije dalje od jednog dodira od trgovine.
  *
- * Kad je vidljiva, odlucuje POZORNICA (`data-buybar` na <html>), ne CSS
+ * BIO JE TRAKA PREKO CIJELE SIRINE, s imenom vina, cijenom i vrstom — tri
+ * komada teksta i gumb. Petar, 2026-09-24: „previse mi je ovo teksta".
+ * Tocno: traka je na telefonu nosila „Navis Mysterium Undersea Amphora"
+ * skraceno trotockom, sto je ime koje nitko ne cita u prolazu, i vezala je
+ * cijelu naslovnicu uz JEDAN proizvod bez razloga.
+ *
+ * Sada je jedan gumb i jedna rijec. Odrediste je isto, teksta je cetiri puta
+ * manje, a meta je veca jer nije stisnuta uz naziv.
+ *
+ * SAMO NA MOBITELU I TABLETU. Od 62.5rem je sakriven u CSS-u: ondje header
+ * nosi puni izbornik pa je „Wines" ionako stalno na ekranu.
+ *
+ * Kad je vidljiv, odlucuje POZORNICA (`data-buybar` na <html>), ne CSS
  * `position: sticky`. Dva razloga, oba placena:
  *   - `sticky` element ostaje u toku, pa nikad ne pokriva hero nego se s njim
  *     skrola (vidi `sticky-negative-margin-escapes` u vaultu)
- *   - traka koja sjedne na drugi CTA je vec jednom razvalila naslovnicu
- *     (`floating-button-covers-cta`), pa je u footeru i u heroju NEMA
+ *   - gumb koji sjedne na drugi CTA je vec jednom razvalio naslovnicu
+ *     (`floating-button-covers-cta`), pa ga u heroju i u footeru NEMA
  *
  * Server komponenta: nema stanja, nema hidracije, cisti HTML + CSS.
  */
 export default function BuyBar() {
-  const hero = WINES[0]
-
   return (
-    <div className="buybar" aria-hidden={false}>
-      <div className="buybar-in">
-        <div className="buybar-t">
-          <strong>{hero.name}</strong>
-          <span>
-            {money(hero.price)} &#183; {hero.kind}
-          </span>
-        </div>
-        <a className="buybar-go" href="/shop">
-          Shop
-        </a>
-      </div>
-    </div>
+    <a className="buybtn" href="/shop">
+      Shop
+    </a>
   )
 }

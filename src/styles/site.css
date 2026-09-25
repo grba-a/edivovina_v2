@@ -737,54 +737,25 @@
    skrola umjesto da ga pokrije. Fiksna je, a KAD je vidljiva odlucuje
    pozornica kroz `data-buybar` — u heroju je nema (tamo su vlastiti gumbi),
    u footeru je nema (tamo bi sjela na kontakt i na predmet u stalku). */
-.buybar {
+/* ------------------------------------------------ plutajuci gumb za kupnju */
+/* BIO JE TRAKA preko cijele sirine s imenom vina, cijenom i vrstom. Petar,
+   2026-09-24: „previse mi je ovo teksta". Sada je jedan gumb i jedna rijec.
+
+   Gumb, ne traka: ne zauzima cijelo dno kadra, ne skraceuje ime vina
+   trotockom i ne vezuje naslovnicu uz jedan proizvod. */
+.buybtn {
   position: fixed;
-  inset-inline: 0;
-  inset-block-end: 0;
+  inset-inline-end: var(--gutter);
+  inset-block-end: calc(var(--s-4) + env(safe-area-inset-bottom, 0px));
   z-index: 18;
-  background: rgba(7, 19, 34, 0.96);
-  border-block-start: 1px solid var(--color-hairline);
-  backdrop-filter: blur(8px);
-  padding-block-end: env(safe-area-inset-bottom, 0px);
-  transform: translateY(100%);
-  transition: transform 260ms var(--ease-out);
-}
-:root[data-buybar='on'] .buybar { transform: translateY(0); }
 
-/* Izlaz je brzi od ulaza: sustav odgovara, korisnik ne ceka. */
-:root[data-buybar='off'] .buybar { transition-duration: 180ms; }
-
-.buybar-in {
-  max-width: var(--wrap);
-  margin-inline: auto;
-  padding: var(--s-3) var(--gutter);
-  display: flex;
-  align-items: center;
-  gap: var(--s-4);
-}
-.buybar-t { flex: 1; min-width: 0; }
-.buybar-t strong {
-  display: block;
-  font-family: var(--font-serif), Georgia, serif;
-  font-weight: 400;
-  font-size: var(--t-body);
-  color: var(--color-cream);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.buybar-t span {
-  display: block;
-  font-size: var(--t-small);
-  color: rgba(250, 246, 240, 0.6);
-  font-variant-numeric: tabular-nums;
-}
-.buybar-go {
-  flex: none;
+  /* Meta je 2.75rem visoka i siroka koliko treba — Apple HIG trazi 44 px.
+     Sadrzaj je jedna rijec, pa se ne lomi i ne treba `white-space`. */
   min-height: 2.75rem;
-  display: grid;
+  display: inline-grid;
   place-items: center;
-  padding-inline: var(--s-5);
+  padding-inline: var(--s-6);
+
   background: var(--color-gold);
   color: var(--color-ink);
   font-size: var(--t-small);
@@ -792,11 +763,1482 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   text-decoration: none;
-  transition: transform 160ms var(--ease-out);
+  border-radius: 999px;
+  /* Sjena ga odvaja od fotografije ispod, bez obruba koji bi ga pretvorio u
+     jos jednu kutiju. */
+  box-shadow: 0 2px 6px rgba(4, 13, 27, 0.35), 0 12px 28px -10px rgba(4, 13, 27, 0.65);
+
+  /* Skriven dok pozornica ne kaze drukcije. Klizi s DESNE strane, ne odozdo:
+     kraci put, i ne prelazi preko sadrzaja na koji bi mogao sjesti. */
+  transform: translateX(calc(100% + var(--gutter)));
+  transition: transform 260ms var(--ease-out);
 }
-.buybar-go:active { transform: scale(0.97); }
+:root[data-buybar='on'] .buybtn { transform: none; }
+
+/* Izlaz je brzi od ulaza: sustav odgovara, korisnik ne ceka. */
+:root[data-buybar='off'] .buybtn { transition-duration: 180ms; }
+
+.buybtn:active { transform: scale(0.97); }
+:root[data-buybar='on'] .buybtn:active { transform: scale(0.97); }
+
+/* NA DESKTOPU GA NEMA (Petar, 2026-09-24).
+   Od 62.5rem se pojavljuje puni izbornik u headeru i nestaje hamburger, pa je
+   „Wines" stalno na ekranu — gumb od te sirine vise ne rjesava problem.
+
+   Ista granica kao `BREAKPOINT_WIDE` u `stage.ts`, namjerno: jedna sirina za
+   „ovo je desktop", ne dvije koje se s vremenom raziđu.
+
+   `display: none`, ne prozirnost: gumb mora izaci i iz reda tabulatora. */
+@media (min-width: 62.5rem) {
+  .buybtn { display: none; }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .buybar { transition: none; }
-  .buybar-go:active { transform: none; }
+  .buybtn { transition: none; }
+  .buybtn:active,
+  :root[data-buybar='on'] .buybtn:active { transform: none; }
+}
+
+
+/* ============================================================================
+   PODSTRANICE — 24. rujna 2026.
+   Amfora ovdje ne postoji. Nijedna od ovih ploha ne ustupa traku predmetu.
+   ========================================================================= */
+
+/* ---------------------------------------------------- otvor podstranice */
+/* Bez fotografije: pravne stranice. */
+.phead {
+  position: relative;
+  background: var(--color-ink-2);
+  border-block-end: 1px solid var(--color-hairline);
+  padding-block: var(--s-8) var(--s-7);
+  /* header je fiksan; ovo je njegova visina, da naslov ne sjedne pod njega */
+  padding-block-start: calc(var(--s-8) + 3.5rem);
+}
+.phead-title { font-size: var(--t-h2); }
+.phead-lede {
+  margin-block-start: var(--s-4);
+  font-size: var(--t-lead);
+  color: rgba(250, 246, 240, 0.72);
+  max-width: 46ch;
+}
+
+/* S fotografijom. NIJE 100svh — to je posao heroja na naslovnici; ovdje bi
+   traka preko cijelog kadra znacila da se do sadrzaja mora skrolati. */
+.phead-photo {
+  display: flex;
+  align-items: flex-end;
+  min-height: 18rem;
+  min-height: 44svh;
+  padding-block: calc(var(--s-8) + 3.5rem) var(--s-6);
+  overflow: hidden;
+  background: var(--color-ink);
+  border-block-end: 0;
+}
+.phead-bg { object-fit: cover; object-position: 50% 50%; z-index: 0; }
+
+/* Tezi PRI DNU, isto kao na naslovnici: ravnomjeran zastor zadovolji kontrast
+   i ubije fotografiju. */
+.phead-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(4, 13, 27, 0.62) 0%, rgba(4, 13, 27, 0.1) 38%),
+    linear-gradient(0deg, rgba(4, 13, 27, 0.9) 0%, rgba(4, 13, 27, 0.15) 62%);
+}
+.phead-photo .wrap { position: relative; z-index: 2; width: 100%; }
+.phead-photo .phead-title { font-size: var(--t-hero); letter-spacing: -0.015em; }
+
+@media (min-width: 48rem) {
+  .phead { padding-block-start: calc(var(--s-9) + 3.5rem); }
+  .phead-photo {
+    min-height: 26rem;
+    min-height: 54svh;
+    padding-block: calc(var(--s-9) + 3.5rem) var(--s-8);
+  }
+}
+
+.section-tight { padding-block-start: 0; }
+
+/* ------------------------------------------------------- mreza trgovine */
+/* Dva stupca na mobitelu, isto kao naslovnica; tri od tableta navise. Bez
+   `auto-fit`, jer bi na 10 proizvoda zadnji red ostao s jednom karticom
+   razvucenom preko cijele sirine. */
+.grid-shop {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-6) var(--s-4);
+}
+@media (min-width: 48rem) {
+  .grid-shop { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-7) var(--s-5); }
+}
+@media (min-width: 62.5rem) {
+  .grid-shop { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* Rasprodano se KAZE. Kod njih Undersea Bottle stoji u mrezi bez ijedne
+   oznake, s gumbom „Read more" — kupac to sazna tek na stranici proizvoda. */
+.wine.is-out .wine-img { opacity: 0.45; }
+.wine-out {
+  font-size: var(--t-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: rgba(250, 246, 240, 0.55);
+  border: 1px solid rgba(250, 246, 240, 0.2);
+  padding: var(--s-3) var(--s-4);
+  white-space: nowrap;
+}
+
+.shop-ship {
+  margin-block-start: var(--s-7);
+  padding-block-start: var(--s-5);
+  border-block-start: 1px solid var(--color-hairline);
+  font-size: var(--t-small);
+  color: rgba(250, 246, 240, 0.55);
+}
+
+/* --------------------------------------------------------- proizvod */
+.prod { padding-block: var(--s-7) var(--sec-y); padding-block-start: calc(var(--s-7) + 3.5rem); }
+.prod-in { display: flex; flex-direction: column; gap: var(--s-6); }
+
+.prod-shot {
+  position: relative;
+  background: var(--color-ink-2);
+  border: 1px solid var(--color-hairline);
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+.prod-img { width: 100%; height: 100%; object-fit: contain; object-position: 50% 55%; }
+
+.prod-body { display: flex; flex-direction: column; gap: var(--s-4); }
+.prod-title { font-size: var(--t-h2); }
+
+.prod-buy {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  flex-wrap: wrap;
+  margin-block-start: var(--s-2);
+}
+.prod-price {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: var(--t-h3);
+  color: var(--color-gold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* „Notice: each amphora is unique…" — kod njih sitno, na dnu, iza dva
+   odlomka. To je razlog zasto predmet vrijedi 382 EUR, pa stoji uz cijenu. */
+.prod-notice {
+  border-inline-start: 2px solid var(--color-gold);
+  padding-inline-start: var(--s-4);
+  font-size: var(--t-small);
+  line-height: 1.6;
+  color: rgba(250, 246, 240, 0.78);
+}
+
+.prod-spec {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-3);
+  margin: 0;
+}
+.prod-spec div { margin: 0; }
+.prod-spec dd {
+  margin: 0;
+  font-size: var(--t-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 240, 0.6);
+  border: 1px solid var(--color-hairline);
+  padding: 0.28rem 0.55rem;
+}
+
+.prod-text p { color: rgba(250, 246, 240, 0.78); }
+
+.prod-facts {
+  list-style: none;
+  margin: var(--s-2) 0 0;
+  padding: var(--s-5) 0 0;
+  border-block-start: 1px solid var(--color-hairline);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  font-size: var(--t-small);
+  color: rgba(250, 246, 240, 0.55);
+}
+
+@media (min-width: 62.5rem) {
+  .prod-in {
+    flex-direction: row;
+    align-items: start;
+    gap: var(--s-8);
+  }
+  .prod-shot { flex: 0 0 30rem; max-width: 30rem; }
+  .prod-body { flex: 1 1 0; min-width: 0; }
+}
+
+/* ------------------------------------------------------------- recenzije */
+/* Bez zvjezdica. Svih osam je petica iz 2022., pa je red zvjezdica na svakoj
+   dekoracija koja se ponavlja. Datum stoji jer je dio istine (odluka D1). */
+.revs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-5);
+}
+@media (min-width: 48rem) {
+  .revs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-5) var(--s-6); }
+}
+.revs li {
+  border-block-start: 1px solid var(--color-hairline);
+  padding-block-start: var(--s-4);
+}
+.rev-text {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: var(--t-body);
+  line-height: 1.55;
+}
+.rev-who {
+  margin-block-start: var(--s-3);
+  display: flex;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+  font-size: var(--t-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 240, 0.45);
+}
+
+/* ----------------------------------------------------------------- proza */
+/* Njihov tekst je jedan blok OBOSTRANO poravnat. Obostrano poravnanje na
+   375 px radi rijeke praznina, pa ovdje ne postoji nigdje. */
+.prose { display: flex; flex-direction: column; gap: var(--s-5); }
+.prose p { color: rgba(250, 246, 240, 0.8); }
+
+.pull {
+  margin: var(--s-4) 0;
+  padding-inline-start: var(--s-5);
+  border-inline-start: 2px solid var(--color-gold);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: var(--t-lead);
+  line-height: 1.5;
+  color: var(--color-cream);
+  max-width: var(--measure);
+}
+
+/* Kod njih je ovo jedna duga recenica u zagradi, u kojoj se Janjina,
+   Petrinja, Sisak i Varazdin izgube. Popis je popis. */
+.madein { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.madein li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-4);
+  padding-block: var(--s-3);
+  border-block-end: 1px solid var(--color-hairline);
+}
+.madein-w { font-family: var(--font-serif), Georgia, serif; }
+.madein-p {
+  font-size: var(--t-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  flex: none;
+}
+.madein-close {
+  margin-block-start: var(--s-6);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: var(--t-h3);
+  color: var(--color-cream);
+}
+
+/* ------------------------------------------------------- lokacije, press */
+.places, .visit { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-7); }
+.places li, .visit li { display: flex; flex-direction: column; gap: var(--s-3); align-items: flex-start; }
+.places h2, .visit h2 { font-size: var(--t-h3); }
+.places-what, .visit-what { color: rgba(250, 246, 240, 0.7); font-size: var(--t-small); }
+.places address, .visit address {
+  font-style: normal;
+  font-family: var(--font-serif), Georgia, serif;
+  line-height: 1.6;
+}
+.places address span, .visit address span { font-family: var(--font-sans), sans-serif; font-size: var(--t-small); color: rgba(250, 246, 240, 0.5); }
+.visit-note { color: rgba(250, 246, 240, 0.7); margin-block-end: var(--s-5); }
+
+@media (min-width: 48rem) {
+  .places, .visit { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-8); }
+}
+
+/* Broj i mail stoje kao TEKST koji se moze oznaciti, ne samo kao link:
+   `tel:` se na racunalu ne otvara nigdje. */
+.reach { list-style: none; margin: var(--s-7) 0 0; padding: var(--s-5) 0 0; border-block-start: 1px solid var(--color-hairline); display: grid; gap: var(--s-4); }
+.reach li { display: flex; flex-direction: column; gap: 0.15rem; }
+.reach-l { font-size: var(--t-label); letter-spacing: 0.16em; text-transform: uppercase; color: rgba(250, 246, 240, 0.45); }
+.reach a {
+  color: var(--color-cream);
+  text-decoration: none;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: var(--t-h3);
+  /* dodirna meta, ne samo tekst */
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  width: fit-content;
+}
+.reach a:hover { color: var(--color-gold); }
+@media (min-width: 48rem) { .reach { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* Godina je struktura, ne ukras: 28 od 59 spomena je iz 2018.
+
+   Stranica stoji na KREM plohi, kao i sekcija press na naslovnici. `.press-*`
+   klase su pisane za svijetlu podlogu (`--color-ink` na naslovu), pa bi na
+   tamnoj bile crno na tamnoplavom — sto su i bile dok nisam pogledao. */
+.press-year + .press-year { margin-block-start: var(--s-7); }
+.press-year h2 {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  font-size: var(--t-h3);
+  color: var(--color-gold-ink);
+  padding-block-end: var(--s-3);
+  border-block-end: 1px solid rgba(45, 55, 72, 0.22);
+  margin-block-end: 0;
+}
+.press-year h2 span {
+  font-family: var(--font-sans), sans-serif;
+  font-size: var(--t-label);
+  letter-spacing: 0.16em;
+  color: var(--color-muted);
+}
+/* Prvi redak vec nosi crtu od naslova godine. */
+.press-year .press li:first-child { border-block-start: 0; }
+
+/* ------------------------------------------------------------- galerija */
+/* Sidra, ne filtar. Kod njih je filtar Elementorov widget s jQueryjem. */
+.galnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  max-width: var(--wrap);
+  margin-inline: auto;
+  /* Donji razmak je nuzan: prva sekcija galerije nosi `section-tight`, koji
+     gasi gornji padding, pa bi joj naslov sjedio na sidrima. */
+  padding: var(--s-6) var(--gutter) var(--s-6);
+}
+.galnav a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 2.75rem;
+  padding-inline: var(--s-4);
+  border: 1px solid var(--color-hairline);
+  color: var(--color-cream);
+  text-decoration: none;
+  font-size: var(--t-small);
+  letter-spacing: 0.08em;
+  transition: border-color var(--t-ui) var(--ease-out), color var(--t-ui) var(--ease-out);
+}
+.galnav a:hover { border-color: var(--color-gold); color: var(--color-gold); }
+.galnav a span { font-size: var(--t-label); color: rgba(250, 246, 240, 0.4); font-variant-numeric: tabular-nums; }
+
+.gal-lede { margin-block-start: var(--s-3); color: rgba(250, 246, 240, 0.6); font-size: var(--t-small); }
+
+/* DVA stupca na mobitelu, ne tri. Kod njih tri stupca na 375 px daju sliku
+   od oko 110 px, na kojoj se ronilac s amforom ne vidi. */
+.galgrid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3); }
+.galgrid li { background: var(--color-ink-2); aspect-ratio: 4 / 3; overflow: hidden; }
+.galgrid img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (min-width: 48rem) { .galgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); } }
+@media (min-width: 62.5rem) { .galgrid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* --------------------------------------------------------------- obrazac */
+/* PREDLOZAK: ne salje nista dok se ne prepise u Breakdance. */
+.form { display: flex; flex-direction: column; gap: var(--s-4); align-items: flex-start; max-width: 34rem; }
+.form-row { display: flex; flex-direction: column; gap: var(--s-2); width: 100%; margin: 0; }
+.form-row label { font-size: var(--t-label); letter-spacing: 0.16em; text-transform: uppercase; color: rgba(250, 246, 240, 0.55); }
+.form-row input,
+.form-row textarea {
+  width: 100%;
+  min-height: 2.75rem;
+  font: inherit;
+  font-size: var(--t-body);
+  color: var(--color-cream);
+  background: var(--color-ink-2);
+  border: 1px solid var(--color-hairline);
+  padding: var(--s-3) var(--s-4);
+  border-radius: 0;
+}
+.form-row textarea { min-height: 8rem; resize: vertical; }
+.form-row input:focus-visible,
+.form-row textarea:focus-visible { border-color: var(--color-gold); }
+.form-note { font-size: var(--t-small); color: rgba(250, 246, 240, 0.5); }
+
+/* ------------------------------------------------------- pravne stranice */
+/* Gola stranica: samo tekst. Kod njih svaka od ovih nosi ladicu kosarice i
+   widget za bodove — na stranici s uvjetima poslovanja. */
+.legal { max-width: 46rem; }
+.legal h2 { font-size: var(--t-h3); margin-block: var(--s-6) var(--s-3); }
+.legal h3 { font-size: var(--t-body); color: var(--color-gold); margin-block: var(--s-5) var(--s-2); }
+.legal p { color: rgba(250, 246, 240, 0.72); font-size: var(--t-small); line-height: 1.7; margin-block-end: var(--s-3); }
+.legal li { color: rgba(250, 246, 240, 0.72); font-size: var(--t-small); line-height: 1.7; margin-inline-start: var(--s-5); margin-block-end: var(--s-2); }
+.legal > *:first-child { margin-block-start: 0; }
+
+.legalnav { list-style: none; margin: 0; padding: var(--s-5) 0 0; border-block-start: 1px solid var(--color-hairline); display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); }
+.legalnav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: rgba(250, 246, 240, 0.6);
+  text-decoration: none;
+  font-size: var(--t-small);
+}
+.legalnav a:hover { color: var(--color-gold); }
+
+/* ============================================================================
+   PODSTRANICE, druga runda — 24. rujna 2026.
+   Petar: „sve je previse prazno i monotono, fali slika". Ovo je odgovor na to.
+   ========================================================================= */
+
+/* ------------------------------------------------- prica s fotografijama */
+/* Odlomci i slike u jednom toku. Slika NIJE u tekstu nego izmedu njega, pa se
+   mjera reda (62ch) nigdje ne lomi. */
+.story-flow { display: flex; flex-direction: column; gap: var(--s-6); }
+.story-step { display: flex; flex-direction: column; gap: var(--s-6); }
+.story-step p { color: rgba(250, 246, 240, 0.8); }
+
+.story-shot { margin: 0; }
+.story-shot img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--color-hairline);
+}
+/* Uspravne fotografije se ne razvlace preko cijele sirine: na 1440 px bi
+   grozd bio visok 1600 px i pojeo cijeli kadar. */
+.story-shot:not(.is-wide) img { max-width: 26rem; }
+
+@media (min-width: 62.5rem) {
+  .story-flow { max-width: 52rem; }
+  .story-shot.is-wide { margin-inline: calc(var(--s-7) * -1); }
+}
+
+.madein-wrap { display: flex; flex-direction: column; gap: var(--s-7); }
+.madein-shot { margin: 0; }
+.madein-shot img { width: 100%; height: auto; display: block; border: 1px solid var(--color-hairline); }
+@media (min-width: 62.5rem) {
+  .madein-wrap { flex-direction: row; align-items: center; gap: var(--s-8); }
+  .madein-wrap > div { flex: 1 1 0; min-width: 0; }
+  .madein-shot { flex: 0 0 28rem; max-width: 28rem; }
+}
+
+/* ------------------------------------------------------ lokacija s slikom */
+.place { display: flex; flex-direction: column; gap: var(--s-5); }
+.place-shot { margin: 0; }
+.place-shot img { width: 100%; height: auto; display: block; border: 1px solid var(--color-hairline); }
+.place-body { display: flex; flex-direction: column; gap: var(--s-3); align-items: flex-start; }
+.place-body h2 { font-size: var(--t-h3); }
+.place-what { color: rgba(250, 246, 240, 0.72); }
+.place-sees {
+  list-style: none;
+  margin: var(--s-2) 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.place-sees li {
+  position: relative;
+  padding-inline-start: var(--s-5);
+  font-size: var(--t-small);
+  color: rgba(250, 246, 240, 0.72);
+}
+.place-sees li::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.6em;
+  width: var(--s-3);
+  height: 1px;
+  background: var(--color-gold);
+}
+.place address { font-style: normal; font-family: var(--font-serif), Georgia, serif; line-height: 1.6; }
+.place address span { font-family: var(--font-sans), sans-serif; font-size: var(--t-small); color: rgba(250, 246, 240, 0.5); }
+
+.places-shot { margin: 0 0 var(--s-2); }
+.places-shot img { width: 100%; height: auto; display: block; border: 1px solid var(--color-hairline); }
+
+@media (min-width: 62.5rem) {
+  .place { flex-direction: row; align-items: center; gap: var(--s-8); }
+  .place-shot { flex: 0 0 34rem; max-width: 34rem; }
+  .place-body { flex: 1 1 0; min-width: 0; }
+  /* Druga lokacija zrcali prvu, da se dvije sekcije ne citaju kao ista. */
+  #wine-bar .place { flex-direction: row-reverse; }
+}
+
+/* Na krem plohi. */
+
+.reach.is-cream { border-block-start-color: rgba(45, 55, 72, 0.18); }
+.reach.is-cream .reach-l { color: var(--color-muted); }
+.reach.is-cream a { color: var(--color-ink); }
+.reach.is-cream a:hover { color: var(--color-gold-ink); }
+
+/* --------------------------------------------------------------- kartice */
+/* Press kartice sa sadrzajem (Petar, 2026-09-24). Prije su bile goli redci. */
+.cards { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-6); }
+.cards a {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+.cards img {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  background: var(--color-ink-2);
+  transition: opacity var(--t-ui) var(--ease-out);
+}
+@media (hover: hover) { .cards a:hover img { opacity: 0.86; } }
+.cards-t { display: flex; flex-direction: column; gap: var(--s-2); }
+.cards-o {
+  font-size: var(--t-label);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-gold);
+}
+.cards-t strong {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: var(--t-h3);
+  line-height: 1.28;
+  color: var(--color-cream);
+}
+@media (hover: hover) { .cards a:hover .cards-t strong { color: var(--color-gold); } }
+.cards-x { font-size: var(--t-small); color: rgba(250, 246, 240, 0.62); line-height: 1.6; }
+.cards-t time { font-size: var(--t-small); color: rgba(250, 246, 240, 0.4); }
+.cards-all { margin-block-start: var(--s-6); }
+
+@media (min-width: 48rem) {
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-7) var(--s-5); }
+}
+@media (min-width: 62.5rem) {
+  .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-8) var(--s-6); }
+}
+
+/* Tri najnovija su veca: Vogue Adria 2024. ne vrijedi kao pedeset i sesti
+   spomen iz 2018., a u ravnoj mrezi bi izgledali isto. */
+@media (min-width: 62.5rem) {
+  .cards-lead { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cards-lead .is-first { grid-row: span 2; }
+  .cards-lead .is-first .cards-t strong { font-size: var(--t-h2); }
+  .cards-lead .is-first img { aspect-ratio: 16 / 10; }
+}
+
+.press-y {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  font-size: var(--t-h3);
+  color: var(--color-gold-ink);
+  padding-block-end: var(--s-3);
+  border-block-end: 1px solid rgba(45, 55, 72, 0.22);
+  margin-block-end: var(--s-6);
+}
+.press-y span {
+  font-family: var(--font-sans), sans-serif;
+  font-size: var(--t-label);
+  letter-spacing: 0.16em;
+  color: var(--color-muted);
+}
+
+/* ---------------------------------------------------------------- clanak */
+/* Bez trake sa zastorom preko naslova: naslovi su ovdje dugi, a zastor preko
+   njih otezava ono zbog cega je netko dosao. Slika, pa naslov ispod. */
+.art { padding-block-end: var(--sec-y); }
+.art-shot { margin: 0; background: var(--color-ink-2); padding-block-start: 3.5rem; }
+.art-shot img { width: 100%; height: auto; display: block; max-height: 60svh; object-fit: cover; }
+.art-in { max-width: 46rem; padding-block-start: var(--s-7); }
+.art-meta { display: flex; gap: var(--s-4); align-items: baseline; flex-wrap: wrap; font-size: var(--t-small); color: rgba(250, 246, 240, 0.5); }
+.art-outlet { font-size: var(--t-label); letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; color: var(--color-gold); }
+.art-title { font-size: var(--t-h2); margin-block: var(--s-3) var(--s-6); }
+.art-body { display: flex; flex-direction: column; gap: var(--s-4); }
+.art-body p { color: rgba(250, 246, 240, 0.8); }
+.art-body h2 { font-size: var(--t-h3); margin-block-start: var(--s-4); }
+.art-body li { color: rgba(250, 246, 240, 0.8); margin-inline-start: var(--s-5); }
+.art-src {
+  margin-block-start: var(--s-7);
+  padding-block-start: var(--s-4);
+  border-block-start: 1px solid var(--color-hairline);
+  font-size: var(--t-small);
+  color: rgba(250, 246, 240, 0.5);
+}
+.art-src a { color: var(--color-gold); }
+
+/* Dodirna meta od 44 px (Apple HIG) na svakom gumbu i na linku izvora.
+   Audit u WebKitu je na stranici clanka uhvatio gumb 301x40 i link 101x16 —
+   oboje ispod granice. Ovo je minimum, pa ne dira nista sto je vec vece. */
+.btn {
+  min-height: 2.75rem;
+  align-items: center;
+}
+.art-src a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
+
+/* ============================================================================
+   RITAM I DVA STUPCA — 24. rujna 2026.
+
+   Petar: „kakve su ovo sekcije i kakvi su ovo paddinzi, sve je nekako zbijeno".
+   Bio je u pravu, i uzrok nije bio jedan:
+
+   1. `.section-tight` gasi SAMO gornji padding, a donji ostaje --sec-y (8rem
+      na desktopu). Kratka sekcija je zato imala 8rem praznine ispod sebe.
+   2. `.facts` nosi vlastiti `margin-block-start: var(--s-8)`, pa je u sekciji
+      bez gornjeg paddinga stvarao razmak niotkuda.
+   3. `.sec-head` + `.visit-note` + `.reach` slagali su tri margine jednu na
+      drugu, umjesto jedne hijerarhije.
+
+   Rjesenje je STUPNJEVANA hijerarhija, ne jedan razmak svugdje
+   (ui-ux-pro-max, „Section spacing hierarchy").
+   ========================================================================= */
+
+/* Kratka sekcija: nastavlja prethodnu i ne ostavlja rupu ispod sebe. */
+/* GORNJI PADDING NIJE NULA. Bio je, i to je bila greska: sekcija koja
+   nastavlja prethodnu na istoj plohi moze bez njega, ali cim je ploha druga
+   naslov sjedne na sam sav. Petar, 2026-09-25: „nema nikakav padding top". */
+.section-short { padding-block: var(--sec-y-tight); }
+/* Samo kad NASTAVLJA sekciju iste vrste gornji padding otpada. */
+.section-short + .section-short { padding-block-start: 0; }
+.section-tight + .section-tight { padding-block-start: 0; }
+
+/* `.facts` unutar sekcije koja je vec dala razmak ne dodaje svoj. */
+.section-tight .facts,
+.section-short .facts { margin-block-start: 0; }
+
+/* Naslov sekcije bez sadrzaja odmah ispod ne treba pun razmak. */
+.sec-head:last-child { margin-block-end: 0; }
+
+/* --------------------------------------------------------------- dva stupca */
+/* Kontakt: lijevo podaci, desno obrazac (Petar, 2026-09-24). Na mobitelu je
+   to i dalje jedan stupac — podaci prvo, obrazac ispod. */
+.two-col { display: flex; flex-direction: column; gap: var(--s-8); }
+.two-col-a, .two-col-b { min-width: 0; }
+@media (min-width: 62.5rem) {
+  .two-col { flex-direction: row; align-items: flex-start; gap: var(--s-9); }
+  .two-col-a { flex: 1 1 0; }
+  .two-col-b { flex: 0 0 26rem; max-width: 26rem; position: sticky; top: 7rem; }
+}
+
+/* ------------------------------------------------- redak s ikonom i podatkom */
+/* Ikona LIJEVO, podatak desno od nje. Meta je cijeli redak, ne ikona:
+   ikona je 24 px, a meta mora biti 44. */
+.lines { list-style: none; margin: var(--s-6) 0 0; padding: 0; display: flex; flex-direction: column; }
+.line {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  min-height: 3.5rem;
+  padding-block: var(--s-2);
+  color: inherit;
+  text-decoration: none;
+  border-block-end: 1px solid var(--color-hairline);
+  transition: color var(--t-ui) var(--ease-out);
+}
+.lines li:last-child .line { border-block-end: 0; }
+.line svg {
+  flex: none;
+  width: 1.375rem;
+  height: 1.375rem;
+  color: var(--color-gold);
+  transition: transform var(--t-ui) var(--ease-out);
+}
+.line span { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+.line strong {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: var(--t-body);
+  color: var(--color-cream);
+  overflow-wrap: anywhere;
+}
+.line em {
+  font-style: normal;
+  font-size: var(--t-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 240, 0.45);
+}
+@media (hover: hover) {
+  .line:hover strong { color: var(--color-gold); }
+  .line:hover svg { transform: translateX(2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .line:hover svg { transform: none; }
+}
+
+/* Lokacije u lijevom stupcu su uze nego prije, pa idu jedna ispod druge. */
+.two-col .places { grid-template-columns: minmax(0, 1fr); gap: var(--s-7); }
+.two-col .places h3 { font-size: var(--t-h3); font-family: var(--font-serif), Georgia, serif; font-weight: 400; }
+.two-col .places .line { margin-block-start: var(--s-2); }
+
+/* Obrazac u svom stupcu dobiva plohu, da se vidi da je zaseban posao. */
+@media (min-width: 62.5rem) {
+  .two-col-b {
+    background: var(--color-ink-2);
+    border: 1px solid var(--color-hairline);
+    padding: var(--s-6);
+  }
+  .two-col-b .form { max-width: none; }
+}
+
+/* ============================================================================
+   CRTEZI I RAZLICITI RASPOREDI SEKCIJA — 24. rujna 2026.
+
+   Vault, `repeated-structure-reads-as-template`: Auto Ragusa v1 je odbijen
+   jer je isti recept sekcije isao devet puta. Pravilo je „deset sekcija,
+   deset razlicitih rasporeda". Klase ispod postoje da bi sekcije mogle biti
+   RAZLICITE, ne da bi bile jednake.
+   ========================================================================= */
+
+/* ---------------------------------------------------------------- crtezi */
+.fig { margin: 0; }
+.fig-svg { width: 100%; height: auto; display: block; }
+.fig-cap {
+  margin-block-start: var(--s-4);
+  font-size: var(--t-small);
+  color: rgba(250, 246, 240, 0.45);
+  max-width: var(--measure);
+}
+.on-cream .fig-cap { color: var(--color-muted); }
+
+/* Boje crteza dolaze iz tokena, ne iz atributa u SVG-u: crtez mora raditi i
+   na tamnoj i na krem plohi. */
+.fig-ink { stroke: var(--color-cream); }
+.on-cream .fig-ink { stroke: var(--color-ink); }
+.fig-bottle { stroke: var(--color-gold); opacity: 0.75; }
+.fig-gold { stroke: var(--color-gold); }
+.fig-lead { stroke: rgba(250, 246, 240, 0.32); }
+.on-cream .fig-lead { stroke: rgba(45, 55, 72, 0.32); }
+.fig-dot { fill: var(--color-gold); }
+.fig-label {
+  fill: var(--color-cream);
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 17px;
+}
+.on-cream .fig-label { fill: var(--color-ink); }
+
+/* karta — izgled pomorske karte. Obala je CRTA, ne ploha, jer su obalne
+   linije u OSM-u usmjereni putovi a ne zatvoreni poligoni. */
+.fig-sea { fill: #07182a; }
+.on-cream .fig-sea { fill: #e8eef3; }
+.fig-coast {
+  stroke: rgba(250, 246, 240, 0.72);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.on-cream .fig-coast { stroke: rgba(45, 55, 72, 0.7); }
+
+.fig-pin circle { fill: var(--color-cream); stroke: #07182a; stroke-width: 1.5; }
+.on-cream .fig-pin circle { stroke: #e8eef3; }
+.fig-pin.is-ours circle { fill: var(--color-gold); r: 7; }
+.fig-pin text {
+  fill: var(--color-cream);
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 20px;
+  paint-order: stroke;
+  stroke: #07182a;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.on-cream .fig-pin text { fill: var(--color-ink); stroke: #e8eef3; }
+.fig-pin.is-ours text { fill: var(--color-gold); }
+
+.fig-route path { stroke: var(--color-gold); stroke-width: 2.5; }
+.fig-route-bg { fill: #07182a; }
+.on-cream .fig-route-bg { fill: #e8eef3; }
+.fig-route text {
+  fill: var(--color-gold);
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 18px;
+}
+
+/* podmorska scena */
+.fig-w0 { stop-color: #0d2438; }
+.fig-w1 { stop-color: #050f1c; }
+.fig-bub { fill: none; stroke: rgba(250, 246, 240, 0.18); stroke-width: 1; }
+.fig-bed-far { fill: #16243a; }
+.fig-bed-near { fill: #1d2c42; }
+.fig-jar-far { fill: rgba(250, 246, 240, 0.1); }
+.fig-jar-live path, .fig-jar-live rect { fill: var(--color-gold); }
+.fig-line { stroke: rgba(250, 246, 240, 0.7); stroke-width: 1.5; fill: none; }
+.fig-line circle { fill: var(--color-ink-2); }
+.fig-note-s {
+  fill: rgba(250, 246, 240, 0.75);
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 19px;
+}
+.fig-note-b {
+  fill: var(--color-cream);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 30px;
+}
+.fig-note-hl { fill: var(--color-gold); }
+.fig-depth .fig-svg { border: 1px solid var(--color-hairline); }
+
+@media (min-width: 62.5rem) {
+  .fig-map .fig-svg, .fig-depth .fig-svg { max-width: 62rem; margin-inline: auto; }
+}
+
+/* ------------------------------------------------- razliciti rasporedi */
+/* Uvod: jedan stupac, prvi odlomak veci. Bez naslova — naslov je u otvoru. */
+.lede-block { max-width: 44rem; display: flex; flex-direction: column; gap: var(--s-5); }
+.lede-block p { color: rgba(250, 246, 240, 0.8); }
+.lede-first { font-size: var(--t-lead); color: var(--color-cream) !important; }
+
+/* Dva stupca teksta. Na mobitelu jedan — mjera reda je vaznija od simetrije. */
+.dual { display: grid; gap: var(--s-5); }
+.dual p { color: rgba(250, 246, 240, 0.8); max-width: none; }
+@media (min-width: 62.5rem) {
+  .dual { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-8); }
+}
+
+.pull-wide {
+  margin-block-start: var(--s-7);
+  max-width: 44rem;
+  font-size: var(--t-h3);
+}
+
+/* Crtez uz odlomak koji ga objasnjava. */
+.fig-pair { display: flex; flex-direction: column; gap: var(--s-6); }
+.fig-side { color: rgba(250, 246, 240, 0.8); }
+@media (min-width: 62.5rem) {
+  .fig-pair { flex-direction: row; align-items: center; gap: var(--s-8); }
+  .fig-pair .fig { flex: 1 1 0; min-width: 0; }
+  .fig-side { flex: 0 0 24rem; max-width: 24rem; }
+}
+
+.madein-lede { color: rgba(250, 246, 240, 0.8); margin-block-end: var(--s-5); }
+
+/* ============================================================================
+   PODSTRANICE v3 — 25. rujna 2026.
+   Petrov izbor rasporeda po stranici (artifact HRnGiGBEtPLx3rWDShxUhT).
+   Bez oznake razmaknutim verzalom nad naslovima: to je nabrojani znak
+   generirane stranice i imali smo ga 17 puta.
+   ========================================================================= */
+
+/* ------------------------------------------------------ contact: „Javi se" */
+.reach-hero {
+  padding-block: calc(var(--s-9) + 3.5rem) var(--sec-y-tight);
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(9, 51, 78, 0.55), transparent 60%),
+    var(--color-ink);
+}
+.reach-hero h1 { font-size: var(--t-hero); letter-spacing: -0.015em; }
+.reach-lede {
+  margin-block: var(--s-4) var(--s-7);
+  font-size: var(--t-lead);
+  color: rgba(250, 246, 240, 0.72);
+  max-width: 40ch;
+}
+
+/* Tri velika reda. Meta je cijeli redak, ne ikona. */
+.reach-big { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.reach-big a {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  min-height: 5.5rem;
+  padding-block: var(--s-4);
+  border-block-start: 1px solid var(--color-hairline);
+  color: inherit;
+  text-decoration: none;
+  transition: background var(--t-ui) var(--ease-out);
+}
+.reach-big li:last-child a { border-block-end: 1px solid var(--color-hairline); }
+.reach-big svg { flex: none; width: 1.75rem; height: 1.75rem; color: var(--color-gold); }
+.reach-big span { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.reach-big strong {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.25rem, 4.6vw, 1.9rem);
+  color: var(--color-cream);
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+/* Oznaka reda, ne ukras nad naslovom — ovdje verzal nosi informaciju. */
+.reach-big em {
+  font-style: normal;
+  font-size: var(--t-small);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 240, 0.4);
+}
+@media (hover: hover) {
+  .reach-big a:hover { background: rgba(216, 184, 127, 0.06); }
+  .reach-big a:hover strong { color: var(--color-gold); }
+}
+
+/* Dvije lokacije kao dvije ploce preko cijele sirine. */
+.places-band { display: grid; }
+.places-band article { position: relative; display: grid; }
+.places-band img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  grid-area: 1 / 1;
+  min-height: 16rem;
+}
+.places-band > article > div {
+  grid-area: 1 / 1;
+  align-self: end;
+  padding: var(--s-6) var(--gutter);
+  /* Zastor mora pokriti CIJELI blok teksta, ne samo zadnji redak: opis se
+     na fotografiji vinarije nije citao. */
+  background: linear-gradient(0deg, rgba(4, 13, 27, 0.94) 0%, rgba(4, 13, 27, 0.8) 55%, rgba(4, 13, 27, 0.05) 100%);
+  padding-block-start: var(--s-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  align-items: flex-start;
+}
+.places-band h2 { font-size: var(--t-h3); }
+.places-band p { font-size: var(--t-small); color: rgba(250, 246, 240, 0.75); }
+.places-band address {
+  font-style: normal;
+  font-family: var(--font-serif), Georgia, serif;
+  color: var(--color-cream);
+}
+.places-band .btn { margin-block-start: var(--s-2); }
+@media (min-width: 48rem) {
+  .places-band { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .places-band img { min-height: 22rem; }
+}
+
+.form-wrap { max-width: 36rem; margin-inline: auto; }
+.form-wrap h2 { font-size: var(--t-h3); margin-block-end: var(--s-5); }
+/* Obrazac stoji na tamnoj plohi, u svom okviru — krem traka je na
+   podstranicama maknuta (Petar, 2026-09-25). */
+
+
+/* ------------------------------------------- press: jedan otvoren + kazalo */
+.press-lead { padding-block: calc(var(--s-9) + 3.5rem) var(--sec-y-tight); }
+.press-lead h1 { font-size: var(--t-hero); letter-spacing: -0.015em; }
+.press-sum { margin-block: var(--s-4) var(--s-7); color: rgba(250, 246, 240, 0.68); max-width: 44ch; }
+
+.press-open { display: flex; flex-direction: column; gap: var(--s-5); text-decoration: none; color: inherit; }
+.press-open img { width: 100%; height: auto; display: block; border: 1px solid var(--color-hairline); }
+.press-open > div { display: flex; flex-direction: column; gap: var(--s-3); align-items: flex-start; }
+/* Izvor je oznaka, ne ukras nad naslovom: kaze CIJI je tekst. */
+.press-src {
+  font-size: var(--t-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  font-weight: 600;
+}
+.press-open h2 { font-size: var(--t-h2); }
+.press-open p { color: rgba(250, 246, 240, 0.75); }
+.press-open time { font-size: var(--t-small); color: rgba(250, 246, 240, 0.4); }
+@media (hover: hover) { .press-open:hover h2 { color: var(--color-gold); } }
+@media (min-width: 62.5rem) {
+  .press-open { flex-direction: row; align-items: center; gap: var(--s-8); }
+  .press-open img { flex: 0 0 38rem; max-width: 38rem; }
+  .press-open > div { flex: 1 1 0; min-width: 0; }
+}
+
+/* Kazalo: tanki redci, bez slike i bez kartice. Godina nosi brojku jer 28 od
+   59 spomena je iz 2018., sto se u mrezi kartica nije vidjelo. */
+.idx + .idx { margin-block-start: var(--s-7); }
+.idx h2 {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  font-size: var(--t-h3);
+  color: var(--color-gold);
+  padding-block-end: var(--s-2);
+  border-block-end: 1px solid var(--color-hairline);
+}
+.idx h2 b {
+  font-family: var(--font-sans), sans-serif;
+  font-weight: 500;
+  font-size: var(--t-label);
+  letter-spacing: 0.14em;
+  color: rgba(250, 246, 240, 0.4);
+}
+.idx ul { list-style: none; margin: 0; padding: 0; }
+.idx a {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.1rem var(--s-4);
+  align-items: baseline;
+  min-height: 2.75rem;
+  padding-block: var(--s-3);
+  border-block-end: 1px solid rgba(216, 184, 127, 0.14);
+  text-decoration: none;
+  color: inherit;
+}
+.idx-src {
+  grid-column: 1;
+  font-size: var(--t-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+.idx-t {
+  grid-column: 1;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: var(--t-body);
+  line-height: 1.35;
+  color: var(--color-cream);
+}
+.idx time {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  font-size: var(--t-small);
+  color: rgba(250, 246, 240, 0.4);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+@media (hover: hover) { .idx a:hover .idx-t { color: var(--color-gold); } }
+
+/* ------------------------------------------------ gallery: kontakt-list */
+.gal-top { padding-block: calc(var(--s-9) + 3.5rem) var(--sec-y-tight); }
+.gal-top h1 { font-size: var(--t-hero); letter-spacing: -0.015em; max-width: 18ch; }
+.gal-top p { margin-block-start: var(--s-4); color: rgba(250, 246, 240, 0.68); font-size: var(--t-lead); }
+
+.gal-strips { display: flex; flex-direction: column; gap: var(--s-7); }
+
+/* Ploca, ne kartica: nema radijusa ni sjene. Traka je list s kontaktima, pa
+   kadrovi sjede tijesno jedan uz drugi na plohi koja ih drzi. */
+.strip { margin: 0; background: var(--color-ink-2); border: 1px solid var(--color-hairline); }
+.strip-film {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px;
+  padding: 2px;
+}
+.strip-film img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 4 / 3;
+  background: var(--color-ink);
+}
+@media (min-width: 48rem) { .strip-film { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 62.5rem) { .strip-film { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+
+/* Ime teme ISPOD trake, kao na pravom kontakt-listu, s brojem kadrova. */
+.strip figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-2) var(--s-4);
+  padding: var(--s-4) var(--s-4) var(--s-5);
+}
+.strip-name { font-family: var(--font-serif), Georgia, serif; font-size: var(--t-h3); }
+.strip-n {
+  font-family: var(--font-sans), sans-serif;
+  font-size: var(--t-small);
+  color: var(--color-gold);
+  font-variant-numeric: tabular-nums;
+}
+.strip-what { flex: 1 1 100%; font-size: var(--t-small); color: rgba(250, 246, 240, 0.5); }
+
+/* ---------------------------------------------------------- visit: „Put" */
+.route-top { padding-block: calc(var(--s-9) + 3.5rem) var(--sec-y-tight); }
+.route-top h1 { font-size: var(--t-hero); letter-spacing: -0.015em; max-width: 16ch; }
+.route-top p { margin-block-start: var(--s-4); color: rgba(250, 246, 240, 0.68); font-size: var(--t-lead); }
+
+/* Linija nosi informaciju: redoslijed postaja JE redoslijed voznje. */
+.route { list-style: none; margin: 0; padding: 0 0 0 var(--s-6); position: relative; }
+.route::before {
+  content: '';
+  position: absolute;
+  inset-block: 0.6rem 2.5rem;
+  inset-inline-start: 0.3125rem;
+  width: 1px;
+  background: linear-gradient(180deg, var(--color-hairline), var(--color-gold));
+}
+.route > li { position: relative; padding-block-end: var(--s-8); }
+.route > li:last-child { padding-block-end: 0; }
+.route > li::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0.55rem;
+  inset-inline-start: calc(var(--s-6) * -1);
+  width: 0.6875rem;
+  height: 0.6875rem;
+  border-radius: 50%;
+  background: var(--color-ink);
+  border: 1px solid var(--color-hairline);
+}
+/* Nase dvije postaje su pune, prolazne su samo obrubljene. */
+.route > li.is-ours::before { background: var(--color-gold); border-color: var(--color-gold); }
+
+.route h2 { font-size: var(--t-h3); }
+.route-note { margin-block-start: var(--s-2); font-size: var(--t-small); color: rgba(250, 246, 240, 0.45); }
+.route-what { margin-block-start: var(--s-2); color: rgba(250, 246, 240, 0.75); }
+.route img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-block-start: var(--s-4);
+  border: 1px solid var(--color-hairline);
+}
+.route-sees { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--s-2); }
+.route-sees li {
+  position: relative;
+  padding-inline-start: var(--s-5);
+  font-size: var(--t-small);
+  color: rgba(250, 246, 240, 0.72);
+}
+.route-sees li::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.62em;
+  width: var(--s-3);
+  height: 1px;
+  background: var(--color-gold);
+}
+.route address {
+  font-style: normal;
+  font-family: var(--font-serif), Georgia, serif;
+  margin-block-start: var(--s-4);
+}
+.route .btn { margin-block-start: var(--s-3); }
+
+@media (min-width: 62.5rem) {
+  .route { padding-inline-start: var(--s-7); }
+  .route > li::before { inset-inline-start: calc(var(--s-7) * -1); }
+  .route::before { inset-inline-start: 0.3125rem; }
+  .route > li.is-ours { display: grid; grid-template-columns: 1fr 34rem; gap: var(--s-4) var(--s-8); align-items: start; }
+  .route > li.is-ours h2,
+  .route > li.is-ours .route-what,
+  .route > li.is-ours .route-sees,
+  .route > li.is-ours address,
+  .route > li.is-ours .btn { grid-column: 1; justify-self: start; }
+  .route > li.is-ours img { grid-column: 2; grid-row: 1 / span 5; margin-block-start: 0; }
+}
+
+.route-call { max-width: 44rem; }
+.route-call h2 { font-size: var(--t-h3); }
+.route-call p { margin-block-start: var(--s-3); color: rgba(250, 246, 240, 0.75); }
+.route-links { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-6); margin-block-start: var(--s-5); }
+.route-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: var(--t-h3);
+  color: var(--color-cream);
+  text-decoration: none;
+  border-block-end: 1px solid var(--color-gold);
+}
+.route-links a:hover { color: var(--color-gold); }
+
+/* ------------------------------------------------------- about: „Silazak" */
+/* Pozadina tamni kroz stranicu. Vrijednosti nisu proizvoljne: krecu od boje
+   mora pri povrsini (--color-navy) i zavrsavaju na boji tijela stranice. */
+.descent { display: block; }
+.dv { position: relative; padding-block: var(--sec-y-tight); }
+.dv .wrap { display: flex; flex-direction: column; gap: var(--s-5); }
+.dv p { color: rgba(250, 246, 240, 0.8); }
+
+.dv-0 {
+  padding-block: calc(var(--s-9) + 3.5rem) var(--s-9);
+  background: linear-gradient(180deg, #0d3a58 0%, #0a2c45 100%);
+}
+.dv-1 { background: linear-gradient(180deg, #0a2c45, #0a2438); }
+.dv-2 { background: linear-gradient(180deg, #0a2438, #09202f); }
+.dv-3 { background: linear-gradient(180deg, #09202f, #071826); }
+.dv-4 { background: linear-gradient(180deg, #071826, #05111d); }
+.dv-5 { background: linear-gradient(180deg, #05111d, var(--color-ink)); padding-block-end: var(--sec-y); }
+
+.dv-0 h1 { font-size: var(--t-hero); letter-spacing: -0.015em; max-width: 15ch; }
+.dv-lede { font-size: var(--t-lead); color: var(--color-cream) !important; }
+
+/* LJESTVICA. Oznaka stoji uz lijevi rub sekcije i kaze gdje si. Nije ukras:
+   svaka je stvarna dubina, godina ili mjera iz njihovog teksta.
+
+   PRAVI ELEMENT, ne `content: attr()`. Prva verzija je citala `data-mark` s
+   `.wrap`, a atribut je bio na `<section>` — pseudo-element je izasao prazan,
+   sto se na snimci ne vidi jer prazno i nevidljivo izgledaju isto. Uhvatilo
+   se tek mjerenjem `getComputedStyle(..., '::before')`.
+
+   I fizicka svojstva, ne logicka: pod `writing-mode: vertical-rl` logicke osi
+   se zamijene, pa je `inset-inline-start: 0` element odbacio na left 1229 px. */
+.dv-mark {
+  font-family: var(--font-sans), sans-serif;
+  font-size: var(--t-label);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold) !important;
+  padding-block-end: var(--s-3);
+  border-block-end: 1px solid var(--color-hairline);
+  align-self: flex-start;
+  margin: 0;
+}
+
+@media (min-width: 62.5rem) {
+  /* Od sirokog kadra oznaka se uspravi i postane skala uz rub. */
+  .dv .wrap { position: relative; padding-left: 4.5rem; }
+  .dv-0 .wrap { padding-left: 0; }
+  .dv-mark {
+    position: absolute;
+    top: 0.4rem;
+    left: 0;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    border-block-end: 0;
+    border-left: 1px solid var(--color-hairline);
+    padding: var(--s-3) 0 var(--s-3) var(--s-3);
+    white-space: nowrap;
+  }
+}
+
+.dv-quote {
+  margin: var(--s-3) 0;
+  padding-inline-start: var(--s-5);
+  border-inline-start: 2px solid var(--color-gold);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: var(--t-lead);
+  line-height: 1.5;
+  color: var(--color-cream);
+  max-width: var(--measure);
+}
+
+.dv-made { list-style: none; margin: var(--s-3) 0 0; padding: 0; max-width: 34rem; }
+.dv-made li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-4);
+  padding-block: var(--s-3);
+  border-block-end: 1px solid var(--color-hairline);
+}
+.dv-made span { font-family: var(--font-serif), Georgia, serif; }
+.dv-made b {
+  font-family: var(--font-sans), sans-serif;
+  font-weight: 500;
+  font-size: var(--t-small);
+  color: var(--color-gold);
+  flex: none;
+}
+.dv-close {
+  margin-block-start: var(--s-5);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: var(--t-h3);
+  color: var(--color-cream) !important;
+}
+
+
+/* ------------------------------------- gallery: zaglavlje kategorije */
+/* Naslov, opis i brojac u jednom retku od tableta navise. Brojac nije ukras:
+   kaze da se prikazuje osam od koliko ih stvarno ima. */
+.gal-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-2) var(--s-4);
+  margin-block-end: var(--s-5);
+}
+.gal-head h2 { font-size: var(--t-h3); }
+.gal-head p { flex: 1 1 100%; font-size: var(--t-small); color: rgba(250, 246, 240, 0.5); order: 3; }
+.gal-n {
+  font-family: var(--font-sans), sans-serif;
+  font-size: var(--t-small);
+  color: var(--color-gold);
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* Ostatak arhive se KAZE, ne glumi. Nije link jer stranica koja bi ih sve
+   pokazala jos ne postoji — kad postoji, ovo postaje gumb. */
+.cards-rest {
+  display: inline-block;
+  padding-block-start: var(--s-5);
+  border-block-start: 1px solid var(--color-hairline);
+  font-size: var(--t-small);
+  color: rgba(250, 246, 240, 0.45);
+}
+
+
+/* Press kartica BEZ slike (Petar, 2026-09-25): jedna dijeljena slika na
+   dvanaest kartica je ista slika dvanaest puta. Kartica sada stoji na
+   tankoj crti umjesto na slici — nema radijusa, nema sjene, jer nije kutija
+   nego unos. */
+.cards li > a { gap: var(--s-3); }
+.cards li:not(:has(img)) > a {
+  padding-block: var(--s-5);
+  border-block-start: 1px solid var(--color-hairline);
+  height: 100%;
+}
+.cards li:not(:has(img)) .cards-t strong { font-size: var(--t-h3); }
+
+/* ------------------------------------------------ visit: zavrsni poziv */
+/* Jedan glavni poziv, jedan sporedni, mail kao tekst. Boldnost se trosi
+   ovdje, na kraju stranice — svugdje drugdje na ovoj stranici je mirno. */
+.cta {
+  position: relative;
+  display: grid;
+  align-items: center;
+  min-height: 24rem;
+  padding-block: var(--sec-y-tight);
+  overflow: hidden;
+  background: var(--color-ink-2);
+}
+.cta-bg { object-fit: cover; object-position: 50% 58%; z-index: 0; }
+/* Tezi pri dnu i s lijeva, jer tekst stoji ondje. */
+.cta-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(4, 13, 27, 0.94) 0%, rgba(4, 13, 27, 0.72) 48%, rgba(4, 13, 27, 0.35) 100%),
+    linear-gradient(0deg, rgba(4, 13, 27, 0.6), rgba(4, 13, 27, 0.15));
+}
+.cta-in {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-4);
+}
+.cta h2 { font-size: var(--t-h2); max-width: 14ch; }
+.cta p { color: rgba(250, 246, 240, 0.82); max-width: 40ch; }
+
+.cta-acts { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-block-start: var(--s-2); }
+
+/* Glavni: pun zlatni. */
+.cta-go,
+.cta-alt {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 3.25rem;
+  padding-inline: var(--s-6);
+  font-family: var(--font-sans), sans-serif;
+  font-size: var(--t-body);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+  transition: transform 160ms var(--ease-out), background 200ms var(--ease-out);
+}
+.cta-go { background: var(--color-gold); color: var(--color-ink); }
+.cta-go svg { width: 1.25rem; height: 1.25rem; }
+/* Sporedni: samo obrub, vizualno podredjen. */
+.cta-alt { border: 1px solid var(--color-hairline); color: var(--color-cream); }
+.cta-alt svg { width: 1.25rem; height: 1.25rem; color: var(--color-gold); }
+@media (hover: hover) {
+  .cta-go:hover { background: #e6caa0; }
+  .cta-alt:hover { border-color: var(--color-gold); }
+}
+.cta-go:active, .cta-alt:active { transform: scale(0.97); }
+@media (prefers-reduced-motion: reduce) { .cta-go:active, .cta-alt:active { transform: none; } }
+
+/* Mail je tekst, ne gumb: na njega odgovor ceka do sutra. */
+.cta-mail { font-size: var(--t-small); color: rgba(250, 246, 240, 0.55); }
+.cta-mail a {
+  color: var(--color-cream);
+  /* Dodirna meta: audit u WebKitu je uhvatio 113x16 px. */
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
+.cta-mail a:hover { color: var(--color-gold); }
+
+@media (min-width: 62.5rem) {
+  .cta { min-height: 30rem; }
+  .cta h2 { font-size: var(--t-hero); letter-spacing: -0.015em; }
+}
+
+/* ------------------------------ naslovna fotografija na vlastitom otvoru */
+/* About, Visit i Contact imaju SVOJ otvor (silazak, put, javi se), pa ne
+   koriste `PageHead`. Kad su prepisani po Petrovom izboru, izgubili su
+   fotografiju koju ostale tri imaju — Petar, 2026-09-25. Ovo je vraca, a da
+   im ne ponisti vlastiti raspored.
+
+   Zastor je tezi pri dnu, isto kao na naslovnici: ravnomjeran zastor
+   zadovolji kontrast i ubije fotografiju. */
+.has-hero { position: relative; overflow: hidden; }
+.hero-sub-bg { object-fit: cover; z-index: 0; }
+.hero-sub-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(4, 13, 27, 0.68) 0%, rgba(4, 13, 27, 0.2) 40%),
+    linear-gradient(0deg, rgba(4, 13, 27, 0.96) 0%, rgba(4, 13, 27, 0.4) 70%);
+}
+.has-hero > .wrap { position: relative; z-index: 2; }
+
+/* Otvor sa slikom treba visinu da se slika uopce vidi, ali NE 100svh — to je
+   posao heroja na naslovnici. */
+.dv-0.has-hero,
+.route-top.has-hero,
+.reach-hero.has-hero {
+  display: flex;
+  align-items: flex-end;
+  min-height: 20rem;
+  min-height: 52svh;
+  padding-block: calc(var(--s-9) + 3.5rem) var(--s-8);
+}
+/* Gradijent silaska stoji ISPOD fotografije, pa dv-0 zadrzi boju povrsine
+   ondje gdje slika zavrsi. */
+.dv-0.has-hero > .wrap { width: 100%; }
+.route-top.has-hero > .wrap,
+.reach-hero.has-hero > .wrap { width: 100%; }
+
+
+/* Kontakt u dva stupca (Petar, 2026-09-25): lijevo nacini kontakta, desno
+   obrazac. Nacini su lijevo jer su glavni — telefon javlja odmah, obrazac
+   ceka do sutra. */
+.two-col-a > h2,
+.two-col-b > h2 { font-size: var(--t-h3); margin-block-end: var(--s-5); }
+.two-col-a .reach-big { margin-block-start: 0; }
+.two-col-a .reach-big a { min-height: 4.5rem; }
+.two-col-a .reach-big strong { font-size: clamp(1.15rem, 3.4vw, 1.5rem); }
+.two-col-b .form { max-width: none; }
+@media (min-width: 62.5rem) {
+  .two-col-b {
+    background: var(--color-ink-2);
+    border: 1px solid var(--color-hairline);
+    padding: var(--s-6);
+    position: static;
+  }
+}
+
+/* Dugi URL-ovi u tudem tekstu ne lome se sami i guraju cijeli dokument
+   ustranu: na 320 px je `/privacy-policy` bio sirok 428, a jedan clanak 576.
+   Tekst nije nas da ga skracujemo, pa se lomi gdje mora.
+   Izmjereno u WebKitu, `responsive-pass.mjs`. */
+.legal p,
+.legal li,
+.art-body p,
+.art-body li,
+.art-src {
+  overflow-wrap: anywhere;
 }
