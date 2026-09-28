@@ -180,15 +180,14 @@
    naslova ostane otvorena. `position: absolute` prema `.hero`, koji je
    `relative`. Ispod headera (77 px), pa `top` racuna i njega. */
 .hero-brand {
-  /* SAKRIVEN DOK NEMA MJESTA — Petar, 2026-09-28.
-     Cep i mrlja su bili ukras iz vremena kad u heroju nije bilo proizvoda.
-     Otkad je amfora ispred kompasa, na uskom kadru leze TOCNO preko nje:
-     amfora je 82vw i pocinje na 152 px, a cep traje do 334 px. Dvoje se ne
-     moze razmaknuti a da amfora ne sjedne na naslov — pa na telefonu ostaje
-     proizvod, isto naceli kao `.hero-tag` iznad. Vraca se od 62.5rem, gdje
-     je amfora 51vw i desno stvarno ima mjesta.
-     Ako Petar radije zeli obratno, mijenja se samo ovaj `display`. */
-  display: none;
+  /* VRACEN NA TELEFON — Petar, 2026-09-28.
+     Nakratko je bio sakriven, jer sam zakljucio da za njega i amforu nema
+     mjesta. Zakljucak je bio kriv, i to zato sto sam mjerio OKVIRE umjesto
+     sadrzaja: u `hero-amphora.webp` je donjih 32 % prozirno, a sam proizvod
+     zauzima 54 % visine okvira. Mjesta ima, samo ga je trebalo racunati na
+     pikselima koji se vide.
+     Uzi je nego na desktopu (11rem, ne 15): sto je nizi, to amfora smije
+     ostati veca ispod njega. */
   position: absolute;
   z-index: 2;
   inset-block-start: 5.5rem;
@@ -202,7 +201,7 @@
      Treci clan `min()` je kapa po VISINI kadra, i nije ukras: na 360x640
      hero je nizak, naslov sjedne vise, i cep na 62 % sirine mu je ulazio u
      prvi red. `svh` ga na kratkim ekranima sam smanji. */
-  width: min(15rem, 62%, 30svh);
+  width: min(11rem, 50%, 24svh);
 }
 .hero-bottles { width: 100%; height: auto; position: relative; }
 
@@ -2310,9 +2309,11 @@
   /* Grid centrira unutar CONTENT boxa, pa ovo pomice srediste kadra gore.
      NA TELEFONU JE OVO VEC DONJA GRANICA — Petar je 2026-09-28 trazio nize,
      ali mjereno: na 360x800 amfori do naslova ostaje 5 px, na 390 dvadeset.
-     Spustanje bi je posjelo na naslov. Nize se spusta tek od tableta, gdje
-     kadar ima visine. */
-  padding-block-end: 26svh;
+     NIZE NA TELEFONU — Petar, 2026-09-28. Prvi put sam ovo odbio, mjereci
+     razmak od DNA OKVIRA amfore do naslova. Okvir laze: donjih 32 % mu je
+     prozirno. Po stvarnom sadrzaju prostora ima, pa se spusta i ovdje — tek
+     toliko da proizvod prodje ispod cepa gore desno. */
+  padding-block-end: 7svh;
 }
 /* Obje slike u ISTU celiju, da im se centri poklope sami od sebe. */
 .hero-compass > * { grid-area: 1 / 1; }
@@ -2354,7 +2355,11 @@
    kasnijim redoslijedom. Tablet se nije micao, laptop jest, i to je bio
    jedini trag. */
 @media (min-width: 48rem) {
-  .hero-compass { padding-block-end: 9svh; }
+  .hero-compass { padding-block-end: 5svh; }
+  /* Na tabletu je amfora na 82vw bila 630 px siroka i penjala se cepu u
+     okvir (mjereno: preklop 123x98). Ovdje je kadar sirok, pa proizvod ne
+     mora puniti sirinu da bi bio glavni. */
+  .hero-compass .amph { width: min(50vw, 46svh); }
 }
 
 @media (min-width: 62.5rem) {
@@ -2365,6 +2370,18 @@
   .hero-compass .amph { width: min(51vw, 61svh); }
   /* Tek ovdje se cep vraca: amfora je 51vw, pa desno ostaje prazno. */
   .hero-brand { display: block; }
+}
+
+/* NIZAK KADAR: ostaje sam kompas.
+   Na 320x568 hero ima 568 px ukupno, a naslov od tri retka i dva gumba ga
+   popune — proizvod je ondje sjedao na naslov i PRIJE ovih izmjena (39 px),
+   samo to nijedna provjera nije hvatala jer sam mjerio prelijevanje, a ne
+   sudar ukrasa i teksta. Kapa po sirini tu ne pomaze: problem je visina.
+   Isto vrijedi za telefon polozen na bok.
+   Kompas ostaje: on je pozadinski uzorak i smije biti iza teksta. */
+@media (max-height: 38.75rem) {
+  .hero-compass .amph { display: none; }
+  .hero-brand { display: none; }
 }
 
 /* Vrtnja stane, kompas OSTAJE vidljiv. */

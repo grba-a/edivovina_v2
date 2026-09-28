@@ -82,9 +82,12 @@ export default function Hero() {
           <Image
             src="/photo/hero-bottles.png"
             alt="Navis Mysterium amphora and bottle"
-            width={520}
-            height={360}
-            sizes="(min-width: 62.5rem) 520px, 70vw"
+            /* 409x420 je STVARNA velicina datoteke. Prije je ovdje pisalo
+               520x360 — omjer 1,44 umjesto 0,97, pa je okvir do ucitavanja
+               slike bio krivog oblika i sadrzaj je poskakivao. */
+            width={409}
+            height={420}
+            sizes="(min-width: 62.5rem) 320px, 42vw"
             className="hero-bottles"
             /* Next je ovu sliku prijavio kao LCP element. Lijena je bila po
                zadanom, pa je najveca stvar u kadru cekala hidraciju. */
