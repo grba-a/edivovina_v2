@@ -28,16 +28,24 @@ for (const [w, h] of SIZES) {
         .map((el) => ({ el, r: el.getBoundingClientRect() }))
         .filter(({ el, r }) => {
           if (r.right <= innerWidth + 1) return false
-          // Element U fiksnom pretku ne siri dokument. Prva verzija skripte je
-          // preskakala samo one koji su SAMI fixed, pa je prijavljivala
-          // zatvoreni <details> izbornik u headeru kao prelijevanje na 772 px —
-          // a `documentElement.scrollWidth` je bio tocno 768.
+          // NE SIRI SVE STO STRSI DOKUMENT. Dva pretka to sprjecavaju:
+          //  - `position: fixed` — prva verzija skripte je preskakala samo one
+          //    koji su SAMI fixed, pa je prijavljivala zatvoreni <details>
+          //    izbornik u headeru kao prelijevanje na 772 px, a
+          //    `documentElement.scrollWidth` je bio tocno 768;
+          //  - predak koji REŽE (`overflow` ≠ visible) — na tome je pala
+          //    provjera kompasa: dok se vrti, njegov okvir poravnat s osima
+          //    naraste preko ruba kadra, ali hero ima `overflow: hidden` pa
+          //    dokument ostaje na 360. Isti razred greške, drugi uzrok.
+          // Ovo zamjenjuje raniji popis izuzetaka po klasi (hero-bg,
+          // hero-sub-bg, cta-bg): svi su bili u režućem pretku, pa ih pravilo
+          // pokriva samo od sebe.
           for (let n = el; n; n = n.parentElement) {
-            const q = getComputedStyle(n).position
-            if (q === 'fixed') return false
+            const q = getComputedStyle(n)
+            if (q.position === 'fixed') return false
+            if (n !== el && q.overflowX !== 'visible') return false
           }
-          return !el.classList.contains('hero-bg') && !el.classList.contains('hero-sub-bg')
-            && !el.classList.contains('cta-bg')
+          return true
         })
         .slice(0, 2).map(({ el, r }) => el.tagName.toLowerCase() + '.' + String(el.className).split(' ')[0] + '@' + Math.round(r.right))
       const small = [...document.querySelectorAll('a,button,summary,input,textarea,select')]

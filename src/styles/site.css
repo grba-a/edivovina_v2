@@ -160,7 +160,10 @@
    `z-index` i dalje radi: ovo je flex dijete `.hero`, a flex/grid djeca
    slusaju z-index i bez `position`. */
 .hero-in {
-  z-index: 2;
+  /* 3, ne 2: kompas je na 2, a jednak z-index znaci da naslov pobjeduje samo
+     redoslijedom u DOM-u. Tekst mora biti iznad ukrasa po pravilu, ne po
+     slucaju. Slojevi heroja: fotografija 0, zastor 1, kompas 2, tekst 3. */
+  z-index: 3;
   display: grid;
   gap: var(--s-5);
 }
@@ -177,6 +180,15 @@
    naslova ostane otvorena. `position: absolute` prema `.hero`, koji je
    `relative`. Ispod headera (77 px), pa `top` racuna i njega. */
 .hero-brand {
+  /* SAKRIVEN DOK NEMA MJESTA — Petar, 2026-09-28.
+     Cep i mrlja su bili ukras iz vremena kad u heroju nije bilo proizvoda.
+     Otkad je amfora ispred kompasa, na uskom kadru leze TOCNO preko nje:
+     amfora je 82vw i pocinje na 152 px, a cep traje do 334 px. Dvoje se ne
+     moze razmaknuti a da amfora ne sjedne na naslov — pa na telefonu ostaje
+     proizvod, isto naceli kao `.hero-tag` iznad. Vraca se od 62.5rem, gdje
+     je amfora 51vw i desno stvarno ima mjesta.
+     Ako Petar radije zeli obratno, mijenja se samo ovaj `display`. */
+  display: none;
   position: absolute;
   z-index: 2;
   inset-block-start: 5.5rem;
@@ -192,7 +204,32 @@
      prvi red. `svh` ga na kratkim ekranima sam smanji. */
   width: min(15rem, 62%, 30svh);
 }
-.hero-bottles { width: 100%; height: auto; }
+.hero-bottles { width: 100%; height: auto; position: relative; }
+
+/* ZNAK IDE ISPRED KOMPASA — Petar, 2026-09-28.
+   Po slojevima je vec bio ispred (`.hero-in` je 3, kompas 2, i cep doista
+   zaklanja kompasovo „Z"). Problem je bio drugi: MRLJA OD VINA JE
+   POLUPROZIRNA, pa je kompas prosijavao kroz nju i znak je citao kao da je
+   iza. Sloj je bio tocan, dojam nije.
+   Zato mekana aura u boji heroja koja ugasi kompas tocno ispod znaka.
+   Radijalna i bez ostrog ruba: puna u sredini, nestane prije ruba okvira, pa
+   se ne vidi kao krug nego kao da je ondje fotografija mirnija. */
+.hero-brand::before {
+  content: '';
+  position: absolute;
+  /* Siri od okvira: rub prijelaza mora pasti IZVAN znaka, ne na njega. */
+  inset: -22%;
+  /* `--color-ink` upisan brojevima (#040d1b), namjerno: `rgb(from …)` bi
+     trazio Safari 16.4+, a jedina dobit bi bila da token ne stoji dvaput.
+     Ako se ink ikad promijeni, ovo ide s njim. */
+  background: radial-gradient(
+    closest-side,
+    rgba(4, 13, 27, 0.92) 0%,
+    rgba(4, 13, 27, 0.72) 42%,
+    rgba(4, 13, 27, 0) 78%
+  );
+  pointer-events: none;
+}
 
 /* NA MOBITELU GA NEMA — Petar, 2026-09-18.
    Hero na telefonu nosi samo naslov i dva gumba, da se fotografija vidi.
@@ -2241,4 +2278,96 @@
 .art-body li,
 .art-src {
   overflow-wrap: anywhere;
+}
+
+/* ------------------------------------------------------ kompas u heroju */
+/* Vrti se, kao na njihovom webu (Petar, 2026-09-28, po klijentovom trazenju).
+
+   IZNAD ZASTORA (z-index 2; foto 0, zastor 1, tekst 3). Crtez je bijel i
+   prosjecno 24 % neproziran; ispod zastora koji pri dnu nosi 92 % tamne boje
+   bio je nevidljiv, i to je razlog zasto su dva prijasnja pokusaja izgledala
+   kao da nista ne radi.
+
+   JACINA I VELICINA SU NJIHOVE, izmjerene na edivovina.hr: `opacity: 0.5`,
+   `background-size: contain` (puni KRACU dimenziju kadra) i centriran. Moja
+   prva verzija je bila 0,72 i odmaknuta desno — presnazna, sjaj u sredini se
+   tukao s naslovom.
+
+   JEDINA NASA IZMJENA JE VISINA. Njihov hero je 570 px na mobitelu i 864 na
+   desktopu; nas je 100svh, pa bi centriran kompas kod nas pao nize i sjeo
+   tocno na naslov. Zato ga `padding-block-end` dize u gornju trecinu, gdje je
+   fotografija prazna, a tekst nije.
+
+   Ukras, ne sadrzaj: `pointer-events: none` da ne uhvati dodir namijenjen
+   gumbima, i `aria-hidden` u markupu. */
+.hero-compass {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  /* Grid centrira unutar CONTENT boxa, pa ovo pomice srediste kadra gore.
+     NA TELEFONU JE OVO VEC DONJA GRANICA — Petar je 2026-09-28 trazio nize,
+     ali mjereno: na 360x800 amfori do naslova ostaje 5 px, na 390 dvadeset.
+     Spustanje bi je posjelo na naslov. Nize se spusta tek od tableta, gdje
+     kadar ima visine. */
+  padding-block-end: 26svh;
+}
+/* Obje slike u ISTU celiju, da im se centri poklope sami od sebe. */
+.hero-compass > * { grid-area: 1 / 1; }
+
+.hero-compass .compass {
+  /* Njihov `contain`, prepisan: uzmi manju od dvije dimenzije kadra. */
+  width: min(100vw, 72svh);
+  height: auto;
+  /* Njihovih 0,5 ide NA KOMPAS, ne na kontejner — inace bi oslabila i
+     proizvod, a on mora ostati pun. */
+  opacity: 0.5;
+  animation: compass-spin 30s linear infinite;
+  /* Kompozitor ga drzi na svom sloju; bez ovoga se na slabijim telefonima
+     preslikava cijeli hero po svakom kadru. */
+  will-change: transform;
+}
+
+/* Amfore i kutija stoje ISPRED kompasa i MIRUJU — Petar, 2026-09-28.
+   Kod njih je ovo `header-level-2.png` (ime slojeva je njihovo, ne moje).
+   Odnos prema kompasu je njihov: na desktopu 77 %, na mobitelu 90 % — ovdje
+   0,82, jer nas kompas nije jednako velik na obje sirine. */
+.hero-compass .amph {
+  width: min(82vw, 59svh);
+  height: auto;
+  z-index: 1;
+}
+
+@keyframes compass-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* NIZE — Petar, 2026-09-28. Na sirokom kadru je kompas zalazio POD HEADER:
+   izmjereno -72 px na tabletu, -63 na 1440, -60 na 1728.
+
+   MORA STAJATI OVDJE, a ne uz ostala pravila za 48rem gore u datoteci.
+   Ondje je vec jednom bilo i nije radilo: media query ne nosi specifičnost,
+   pa je osnovnih `26svh` nekoliko tisuca redaka NIZE jednostavno pobijedilo
+   kasnijim redoslijedom. Tablet se nije micao, laptop jest, i to je bio
+   jedini trag. */
+@media (min-width: 48rem) {
+  .hero-compass { padding-block-end: 9svh; }
+}
+
+@media (min-width: 62.5rem) {
+  /* Na sirokom kadru tekst je dolje lijevo, a opis dolje desno; kompasu ostaje
+     gornja polovica. Ostaje vodoravno centriran, kao kod njih. */
+  .hero-compass { padding-block-end: 4svh; }
+  .hero-compass .compass { width: min(62vw, 74svh); }
+  .hero-compass .amph { width: min(51vw, 61svh); }
+  /* Tek ovdje se cep vraca: amfora je 51vw, pa desno ostaje prazno. */
+  .hero-brand { display: block; }
+}
+
+/* Vrtnja stane, kompas OSTAJE vidljiv. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-compass .compass { animation: none; }
 }
