@@ -73,16 +73,27 @@ export default function Mesh({ rich, still }: { rich: boolean; still: boolean })
     return { geometry: mesh.geometry, material: mat }
   }, [nodes])
 
-  useFrame((state, dt) => {
+  useFrame((state, raw) => {
     const g = group.current
     if (!g) return
+
+    /* Delta se REZE na 1/20 s. Kad kartica dugo stoji skrivena ili laptop
+       zaspi, prvi kadar nakon povratka moze donijeti delta od nekoliko
+       sekundi — vrtnja bi tada skocila, a poza preskocila cijelu predaju.
+       Mjereno na kratkoj pauzi skoka nema, ali dugu pauzu se ne isplati
+       cekati da se pojavi kod klijenta. */
+    const dt = Math.min(raw, 0.05)
 
     /* Na mobitelu i uz reduced-motion je frameloop 'demand': frame se crta
        samo kad padne `stage` event. Sve sto se izgladuje PO FRAMEU tada nikad
        ne stigne do cilja — kad scroll stane, stanu i frameovi, i predmet
        ostane na pola puta. Zato: gdje nema stalnog frameloopa, nema ni
        izgladivanja. (Ista zamka je vec jednom platjena u v3.) */
-    const snap = still || !rich
+    /* PROMJENA 28. rujna 2026. Prije je `snap` bio `still || !rich`, jer je na
+       mobitelu frameloop bio 'demand' — kadar se crtao samo na scroll, pa se
+       nista nije smjelo izgladivati. Frameloop je sada 'always' i na
+       mobitelu, pa se i tamo klizi. Ostaje samo reduced-motion. */
+    const snap = still
     const k = snap ? 1 : Math.min(1, dt * EASE)
 
     const st = getStage()
@@ -119,15 +130,26 @@ export default function Mesh({ rich, still }: { rich: boolean; still: boolean })
     hold.current = lerp(hold.current, st.hold, kSlow)
     const sit = settle.current
 
-    /* Spori tumble oko svoje osi — predmet u vodi nije montiran na stalak.
-       Na 'demand' frameloopu se okrece po scrollu, sto je i dalje bolje od
-       ukocenog predmeta.
+    /* KONSTANTNA VRTNJA, JEDAN SMJER, SVUGDJE — Petar, 2026-09-28, po
+       klijentovom trazenju.
 
-       GASI SE NA DVA MJESTA: u footeru, gdje amfora sjedi u kovanom stalku, i
-       u prikazu proizvoda, gdje je korisnik drzi prstom. Predmet koji lezi u
-       stalku ili koji vuces rukom a pritom se sam vrti cita se kao greska.
-       Da se vrati vrtnja svugdje: skini `* (1 - hold.current)`. */
-    spin.current += (snap ? 0.006 : dt * 0.14) * (1 - hold.current)
+       Prije je bila 0,14 rad/s = 8 stupnjeva u sekundi, dakle 45 SEKUNDI po
+       punom okretaju, i gasila se u footeru i u prikazu proizvoda. Izmjereno
+       je da se kroz cijeli okretaj slika mijenja svega 4,7 %, jer je amfora
+       rotacijsko tijelo — pa je i ta vrtnja izgledala kao mirovanje.
+
+       Sada 0,35 rad/s = 20 stupnjeva u sekundi, oko 18 s po okretaju. Ono sto
+       vrtnju stvarno cini vidljivom nije brzina nego NAGIB: poze po sekcijama
+       u `stage.ts` drze predmet pod razlicitim kutom, pa se rotacijsko tijelo
+       vidi kako se okrece.
+
+       `hold` vise NE gasi vrtnju. Predlozio sam da ostane ugasena dok korisnik
+       drzi predmet prstom i dok lezi u kovanom stalku; Petar je odlucio da se
+       vrti cijelo vrijeme. Njegova rijec.
+
+       Reduced-motion je jedina iznimka: ondje predmet stoji, ali ostaje
+       vidljiv. */
+    if (!still) spin.current += dt * 0.35
 
     /* Rucni zamah se DODAJE na vrtnju, ne zamjenjuje je: kad korisnik pusti i
        ode dalje, predmet nastavi odande gdje ga je ostavio. */

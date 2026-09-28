@@ -62,16 +62,41 @@ export type Pose = {
  */
 
 /** Desktop: ima bocnog prostora, predmet smije biti velik i ici preko ruba. */
+/**
+ * KUTOVI I UDALJENOSTI PO SEKCIJI — prekrojeno 28. rujna 2026.
+ *
+ * Petar, po klijentovom trazenju: „amfora nije uvijek pod istim kutom; nekad
+ * je pod 45 stupnjeva, nekad 90; zavisi od sekcije do sekcije; nekad je bliza
+ * nama, a nekad veca".
+ *
+ * ZASTO JE NAGIB VAZNIJI OD BRZINE. Izmjereno na stvarnom modelu: kroz cijeli
+ * okretaj se slika mijenja svega 4,7 %, jer je amfora rotacijsko tijelo —
+ * uspravna i vrtena oko svoje osi izgleda isto iz svakog kuta. Nagnuta se
+ * vrtnja vidi odmah, jer predmet krivuljom ulazi i izlazi iz siluete.
+ *
+ * Zato svaka vidljiva sekcija nosi DRUGI nagib i DRUGU udaljenost:
+ *   story   24°  srednje daleko, desno — prvo pojavljivanje
+ *   viewer  12°  najvece i u sredini — predmet je subjekt, blagi nagib samo
+ *                toliko da se vrtnja cita
+ *   press   58°  najblize kadru i odrezano rubom — najsmjelija poza
+ *   footer   0°  uspravno, u kovanom stalku
+ * `hero`, `wines` i `trophies` su prozirne (odluka od 2026-09-15: shop i
+ * awards sekcije amforu skrivaju), ali i dalje nose pozu jer predmet kroz njih
+ * PUTUJE — hero drzi kut iz kojeg ulazi u pricu.
+ */
 const WIDE: Record<Act, Pose> = {
-  hero:     { x:  0.00, y: -0.10, z: 1.00, tilt: -24, o: 0,    lane: 0   },
-  story:    { x:  0.62, y:  0.16, z: 1.35, tilt:   8, o: 1,    lane: 'r' },
-  /* PRIKAZ PROIZVODA. Predmet stane u sredinu, uspravno, velik. Ovo je jedina
-     poza u kojoj korisnik preuzima kontrolu — vrtnja se gasi, a `x`/`y` su na
-     nuli jer je predmet sada subjekt, ne ukras uz tekst. */
-  viewer:   { x:  0.00, y: -0.04, z: 1.60, tilt:   0, o: 1,    lane: 0   },
-  wines:    { x: -0.86, y: -0.34, z: 0.34, tilt: -14, o: 0,    lane: 0   },
-  press:    { x:  0.48, y: -0.34, z: 2.10, tilt:  17, o: 1,    lane: 'r' },
-  trophies: { x: -0.80, y: -0.30, z: 0.32, tilt:  -6, o: 0,    lane: 0   },
+  hero:     { x:  0.00, y: -0.10, z: 1.00, tilt: -34, o: 0,    lane: 0   },
+  /* Petar, 2026-09-28: „u ovoj sekciji je malo povecaj, previse ima slobodnog
+     prostora". Desna polovica je na 1440 px zjapila prazna oko predmeta. */
+  story:    { x:  0.55, y:  0.10, z: 1.72, tilt:  24, o: 1,    lane: 'r' },
+  /* PRIKAZ PROIZVODA. Predmet stane u sredinu i najveci je. Nagib je mali ali
+     NIJE nula: uspravno rotacijsko tijelo se vrti nevidljivo. */
+  viewer:   { x:  0.00, y: -0.04, z: 1.72, tilt:  12, o: 1,    lane: 0   },
+  wines:    { x: -0.86, y: -0.34, z: 0.34, tilt: -20, o: 0,    lane: 0   },
+  /* 58° je bilo previse: predmet je legao vodoravno preko teksta i citao se
+     kao da je pao, ne kao da je nagnut. 36° drzi dinamiku bez toga. */
+  press:    { x:  0.46, y: -0.26, z: 1.95, tilt:  36, o: 1,    lane: 'r' },
+  trophies: { x: -0.80, y: -0.30, z: 0.32, tilt: -10, o: 0,    lane: 0   },
   footer:   { x:  0.00, y: -0.45, z: 0.95, tilt:   0, o: 1,    lane: 0   },
 }
 
@@ -85,12 +110,13 @@ const WIDE: Record<Act, Pose> = {
  * sa strane.
  */
 const NARROW: Record<Act, Pose> = {
-  hero:     { x:  0.00, y:  0.30, z: 0.70, tilt: -18, o: 0,    lane: 0   },
-  story:    { x:  0.52, y:  0.30, z: 0.80, tilt:   8, o: 1,    lane: 'r' },
-  viewer:   { x:  0.00, y: -0.06, z: 1.05, tilt:   0, o: 1,    lane: 0   },
-  wines:    { x: -0.72, y: -0.34, z: 0.30, tilt: -14, o: 0,    lane: 0   },
-  press:    { x:  0.44, y: -0.30, z: 1.25, tilt:  16, o: 1,    lane: 'r' },
-  trophies: { x: -0.68, y: -0.30, z: 0.28, tilt:  -6, o: 0,    lane: 0   },
+  hero:     { x:  0.00, y:  0.30, z: 0.70, tilt: -26, o: 0,    lane: 0   },
+  story:    { x:  0.52, y:  0.30, z: 0.78, tilt:  22, o: 1,    lane: 'r' },
+  viewer:   { x:  0.00, y: -0.06, z: 1.08, tilt:  12, o: 1,    lane: 0   },
+  wines:    { x: -0.72, y: -0.34, z: 0.30, tilt: -20, o: 0,    lane: 0   },
+  /* Blazi nego na sirokom kadru: uzak kadar ne oprosta vodoravan predmet. */
+  press:    { x:  0.42, y: -0.26, z: 1.18, tilt:  30, o: 1,    lane: 'r' },
+  trophies: { x: -0.68, y: -0.30, z: 0.28, tilt: -10, o: 0,    lane: 0   },
   footer:   { x:  0.00, y: -0.34, z: 0.60, tilt:   0, o: 1,    lane: 0   },
 }
 

@@ -13,6 +13,18 @@ export default function AmphoraCanvas() {
   const [rich] = useState(() => window.matchMedia('(min-width: 768px)').matches)
   const [still] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
 
+  /* Kartica u pozadini ne treba crtati. Frameloop je od 2026-09-28 'always'
+     i na mobitelu, jer se amfora mora vrtjeti i kad korisnik ne skrola — bez
+     ovoga bi GPU radio i dok je tab skriven. Canvas je `position: fixed` preko
+     cijelog kadra, pa IntersectionObserver ne bi nikad opalio; vidljivost
+     dokumenta je jedini stvarni signal. */
+  const [awake, setAwake] = useState(true)
+  useEffect(() => {
+    const on = () => setAwake(!document.hidden)
+    document.addEventListener('visibilitychange', on)
+    return () => document.removeEventListener('visibilitychange', on)
+  }, [])
+
   useEffect(() => startStage(), [])
 
   return (
@@ -25,9 +37,15 @@ export default function AmphoraCanvas() {
            Gornja granica 2: na DPR-3 telefonu je to cetvrtina fragmenata
            naspram punog 3, a razlika prema 3 se na 6" ne vidi. */
         dpr={rich ? [1, 1.5] : [1, 2]}
-        /* Mobitel i reduced-motion crtaju samo kad se poza promijeni; desktop
-           vrti trajni tumble. */
-        frameloop={rich && !still ? 'always' : 'demand'}
+        /* KONSTANTNA VRTNJA TRAZI STALNI FRAMELOOP — Petar, 2026-09-28.
+           Prije je bilo `rich && !still ? 'always' : 'demand'`: na mobitelu se
+           kadar crtao SAMO kad padne scroll dogadaj, pa je amfora stajala cim
+           bi korisnik prestao skrolati. Na telefonu nije bila spora nego
+           mrtva, a telefon je uredaj na kojem se web najvise gleda.
+
+           Cijena: ~1,6 Mpx po kadru na telefonu, jedan predmet od 9 500
+           trokuta. Pauzira se kad je kartica skrivena i uz reduced-motion. */
+        frameloop={!still && awake ? 'always' : 'demand'}
         camera={{ position: [0, 0, 11], fov: 32 }}
         /* Antialias i na mobitelu: silueta amfore je kosa krivulja preko
            svijetle pozadine, a to je najgori slucaj za stepenice. Placa se
