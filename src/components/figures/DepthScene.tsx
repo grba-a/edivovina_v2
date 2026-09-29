@@ -1,3 +1,5 @@
+import { getDict, type Lang } from '@/i18n'
+
 /**
  * PODMORSKA SCENA — treci crtez (Petar, 2026-09-24).
  *
@@ -9,14 +11,12 @@
  * days". Njihov web si na dubini proturjeci (press navodi 15 i 20 m), pa do
  * klijentove potvrde vrijedi ono sto pise na About stranici — odluka L1.
  */
-export default function DepthScene() {
+export default function DepthScene({ lang = 'en' }: { lang?: Lang }) {
+  const t = getDict(lang).fig.depth
   return (
     <figure className="fig fig-depth">
       <svg viewBox="0 0 900 520" role="img" aria-labelledby="fig-depth-t" className="fig-svg">
-        <title id="fig-depth-t">
-          An amphora being lowered on a line to the seabed, where rows of amphorae already stand,
-          18 to 25 metres down
-        </title>
+        <title id="fig-depth-t">{t.title}</title>
 
         {/* voda, sve tamnija prema dnu */}
         <defs>
@@ -61,18 +61,19 @@ export default function DepthScene() {
         {/* brojke */}
         <g className="fig-note">
           <text x="450" y="112" textAnchor="middle" className="fig-note-s">
-            stored under the sea at
+            {t.storedAt}
           </text>
           <text x="450" y="150" textAnchor="middle" className="fig-note-b">
-            18–25 metres
+            {t.metres}
           </text>
           <text x="450" y="486" textAnchor="middle" className="fig-note-s">
-            for more than <tspan className="fig-note-hl">700 days</tspan>
+            {t.forMoreThan}
+            <tspan className="fig-note-hl">{t.days}</tspan>
           </text>
         </g>
       </svg>
       <figcaption className="fig-cap">
-        Depth and duration as their own About page states them.
+        {t.caption}
       </figcaption>
     </figure>
   )

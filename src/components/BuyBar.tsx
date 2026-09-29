@@ -1,3 +1,5 @@
+import { getDict, href, type Lang } from '@/i18n'
+
 /**
  * PLUTAJUCI GUMB ZA KUPNJU (odluka C, Petar 2026-09-18).
  *
@@ -25,10 +27,10 @@
  *
  * Server komponenta: nema stanja, nema hidracije, cisti HTML + CSS.
  */
-export default function BuyBar() {
+export default function BuyBar({ lang = 'en' }: { lang?: Lang }) {
   return (
-    <a className="buybtn" href="/shop">
-      Shop
+    <a className="buybtn" href={href(lang, '/shop')}>
+      {getDict(lang).buyBar}
     </a>
   )
 }

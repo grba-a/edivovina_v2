@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { legalBySlug, LEGAL_NAV } from '@/data/legal'
+import { getDict, href, type Lang } from '@/i18n'
 import PageHead from './PageHead'
 import Footer from './Footer'
 
@@ -19,10 +20,15 @@ export function legalMeta(slug: string): Metadata {
  * `robots: noindex` jer pravni tekst nije sadrzaj po kojem se dolazi na web, a
  * 9 773 rijeci pravnog teksta razblazuje ono po cemu jest.
  *
+ * HRVATSKA VERZIJA (/hr/...): tekst ostaje NA ENGLESKOM, isto kao na
+ * edivovina.hr/hr, gdje su svih sest pravnih stranica neprevedene. Pravni
+ * tekst se ne prevodi „otprilike" — trazi prijevod koji klijent odobri.
+ * Prevedeni su samo aria-natpis i podnozje.
+ *
  * Tekst je iz `legal.ts`, gdje stoji blok po blok s izvornom oznakom (h2, p,
  * li), pa se struktura ne gubi u prepisu.
  */
-export default function LegalPage({ slug }: { slug: string }) {
+export default function LegalPage({ slug, lang = 'en' }: { slug: string; lang?: Lang }) {
   const page = legalBySlug(slug)
   if (!page) return null
 
@@ -42,19 +48,19 @@ export default function LegalPage({ slug }: { slug: string }) {
         </div>
       </section>
 
-      <nav className="section section-tight" aria-label="Legal">
+      <nav className="section section-tight" aria-label={getDict(lang).legalNav}>
         <div className="wrap">
           <ul className="legalnav">
             {LEGAL_NAV.filter((n) => n.slug !== slug).map((n) => (
               <li key={n.slug}>
-                <a href={`/${n.slug}`}>{n.title}</a>
+                <a href={href(lang, `/${n.slug}`)}>{n.title}</a>
               </li>
             ))}
           </ul>
         </div>
       </nav>
 
-      <Footer />
+      <Footer lang={lang} />
     </>
   )
 }

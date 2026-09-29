@@ -1,3 +1,5 @@
+import { getDict, type Lang } from '@/i18n'
+
 /**
  * KARTA — STVARNA OBALNA LINIJA, ne crtez od oka.
  *
@@ -36,14 +38,12 @@ const PLACES = [
   { n: 'Dubrovnik', x: 891.4, y: 447.8, dx: -18, dy: -16 },
 ]
 
-export default function MapPeljesac({ route = false }: { route?: boolean }) {
+export default function MapPeljesac({ route = false, lang = 'en' }: { route?: boolean; lang?: Lang }) {
+  const t = getDict(lang).fig.map
   return (
     <figure className="fig fig-map">
       <svg viewBox="0 0 1000 529" role="img" aria-labelledby="fig-map-t" className="fig-svg">
-        <title id="fig-map-t">
-          Chart of the Pelješac peninsula and the coast down to Dubrovnik, marking Orebić,
-          Janjina, Drače and Ston
-        </title>
+        <title id="fig-map-t">{t.title}</title>
 
         <rect width="1000" height="529" className="fig-sea" />
         <path d={COAST} className="fig-coast" fill="none" />
@@ -53,7 +53,7 @@ export default function MapPeljesac({ route = false }: { route?: boolean }) {
             <path d="M335 118C470 150 640 270 878 440" strokeDasharray="3 10" fill="none" />
             <rect x="452" y="196" width="250" height="30" rx="15" className="fig-route-bg" />
             <text x="577" y="216" textAnchor="middle">
-              about an hour by road
+              {t.route}
             </text>
           </g>
         ) : null}
@@ -72,7 +72,7 @@ export default function MapPeljesac({ route = false }: { route?: boolean }) {
         ))}
       </svg>
       <figcaption className="fig-cap">
-        Coastline from OpenStreetMap. Janjina is the winery, Drače the wine bar.
+        {t.caption}
       </figcaption>
     </figure>
   )

@@ -1,5 +1,6 @@
 import Image from 'next/image'
-import { NAV } from '@/data/copy'
+import { getDict, href, type Lang } from '@/i18n'
+import LangSwitch from './LangSwitch'
 import { LANE_NARROW } from '@/lib/stage'
 
 /**
@@ -11,28 +12,27 @@ import { LANE_NARROW } from '@/lib/stage'
  * nigdje ga sami ne objavljuju, a njihov Google profil odrzavaju ljudi izvan
  * tvrtke, pa nije pouzdan izvor. Ceka klijenta.
  */
-export default function Footer() {
+export default function Footer({ lang = 'en' }: { lang?: Lang }) {
+  const t = getDict(lang)
   return (
     <footer data-act="footer" className={`section ftr lane-${LANE_NARROW.footer}`}>
       <div className="wrap ftr-in">
         <div className="ftr-mark">
           <Image src="/brand/edivo-wordmark.png" alt="Edivo Vina" width={148} height={54} />
-          <p className="ftr-claim">
-            Wine aged more than 700 days on the Adriatic seabed, at 14&#8211;16&#176;C.
-          </p>
+          <p className="ftr-claim">{t.footer.claim}</p>
         </div>
 
-        <nav className="ftr-nav" aria-label="Footer">
-          {NAV.map((n) => (
-            <a key={n.href} href={n.href}>
+        <nav className="ftr-nav" aria-label={t.footer.nav}>
+          {t.nav.map((n) => (
+            <a key={n.href} href={href(lang, n.href)}>
               {n.label}
             </a>
           ))}
         </nav>
 
         <address className="ftr-where">
-          <span>Edivo Vina d.o.o.</span>
-          <span>Drače, Janjina, Pelješac</span>
+          <span>{t.footer.company}</span>
+          <span>{t.footer.place}</span>
           <a href="mailto:info@edivovina.hr">info@edivovina.hr</a>
         </address>
       </div>
@@ -45,7 +45,10 @@ export default function Footer() {
 
       <div className="wrap ftr-legal">
         <Image src="/brand/trust-badge.png" alt="" width={180} height={38} />
-        <p>&#169; {new Date().getFullYear()} Edivo Vina. Pelješac, Croatia.</p>
+        <p>
+          {t.footer.copyright(new Date().getFullYear())}
+          <LangSwitch lang={lang} label={t.footer.switchLabel} />
+        </p>
       </div>
     </footer>
   )

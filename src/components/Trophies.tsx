@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { AWARDS, KIND_LABEL } from '@/data/awards'
+import { getDict, type Lang } from '@/i18n'
 import { LANE_NARROW } from '@/lib/stage'
 
 /**
@@ -9,7 +9,8 @@ import { LANE_NARROW } from '@/lib/stage'
  * Oznaka `kind` postoji zbog nalaza iz v3: Sabatina je natjecanje u DIZAJNU.
  * Bez oznake se pet redaka cita kao pet vinskih medalja.
  */
-export default function Trophies() {
+export default function Trophies({ lang = 'en' }: { lang?: Lang }) {
+  const t = getDict(lang).trophies
   return (
     <section data-act="trophies" className={`section lane-${LANE_NARROW.trophies}`}>
       <div className="wrap full">
@@ -17,11 +18,11 @@ export default function Trophies() {
             dvaput. Ostaju samo dvije na stranici, „Peljesac" i „Our mission",
             jer one imenuju mjesto i temu koje naslov ne nosi. */}
         <div className="sec-head">
-          <h2>Wine trophies</h2>
+          <h2>{t.title}</h2>
         </div>
 
         <ul className="trophies">
-          {AWARDS.map((a, i) => (
+          {t.awards.map((a, i) => (
             <li key={`${a.body}-${a.year ?? i}`}>
               <Image src={a.medal} alt="" width={56} height={56} className="trophy-medal" />
               <div className="trophy-text">
@@ -31,7 +32,7 @@ export default function Trophies() {
                 </h3>
                 <p>{a.what}</p>
               </div>
-              <span className={`trophy-kind kind-${a.kind}`}>{KIND_LABEL[a.kind]}</span>
+              <span className={`trophy-kind kind-${a.kind}`}>{t.kind[a.kind]}</span>
             </li>
           ))}
         </ul>

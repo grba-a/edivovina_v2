@@ -4,6 +4,10 @@
    podstranici, i tekst koji izlazi iz svog okvira. */
 import { webkit } from 'playwright'
 
+/* PREFIX=/hr node scripts/responsive-pass.mjs — isti prolaz za hrvatsku verziju. */
+const PREFIX = process.env.PREFIX || ''
+const urlFor = (route) => (PREFIX ? (route === '/' ? PREFIX : PREFIX + route) : route)
+
 const ROUTES = [
   '/', '/shop', '/product/navis-mysterium-undersea-amphora', '/about-us', '/visit-us',
   '/gallery', '/news-stories', '/news/vogue-adria-underwater-wine-cellars', '/contact',
@@ -21,7 +25,7 @@ for (const [w, h] of SIZES) {
     const p = await ctx.newPage()
     const errs = []
     p.on('pageerror', (e) => errs.push(String(e).slice(0, 60)))
-    await p.goto('http://localhost:4300' + route, { waitUntil: 'networkidle' })
+    await p.goto('http://localhost:4300' + urlFor(route), { waitUntil: 'networkidle' })
     await p.waitForTimeout(500)
     const r = await p.evaluate(() => {
       const over = [...document.querySelectorAll('body *')]

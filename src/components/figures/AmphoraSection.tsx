@@ -1,3 +1,5 @@
+import { getDict, type Lang } from '@/i18n'
+
 /**
  * PRESJEK AMFORE — crtez, ne fotografija.
  *
@@ -13,14 +15,12 @@
  *
  * Brojke su NJIHOVE, s njihove About stranice i stranice proizvoda.
  */
-export default function AmphoraSection() {
+export default function AmphoraSection({ lang = 'en' }: { lang?: Lang }) {
+  const t = getDict(lang).fig.section
   return (
     <figure className="fig">
       <svg viewBox="0 0 900 520" role="img" aria-labelledby="fig-sec-t" className="fig-svg">
-        <title id="fig-sec-t">
-          Cross-section of a Navis Mysterium amphora: a 0.75 litre glass bottle inside a clay
-          amphora, sealed with cork and two layers of wax
-        </title>
+        <title id="fig-sec-t">{t.title}</title>
 
         <g className="fig-ink" fill="none" strokeLinecap="round" strokeLinejoin="round">
           {/* tijelo amfore */}
@@ -63,14 +63,13 @@ export default function AmphoraSection() {
           <circle cx="356" cy="300" r="4" />
         </g>
         <g className="fig-label">
-          <text x="546" y="58">cork &amp; two layers of wax</text>
-          <text x="576" y="232">clay amphora</text>
-          <text x="198" y="296" textAnchor="end">glass bottle, 0.75 L</text>
+          <text x="546" y="58">{t.cork}</text>
+          <text x="576" y="232">{t.clay}</text>
+          <text x="198" y="296" textAnchor="end">{t.glass}</text>
         </g>
       </svg>
       <figcaption className="fig-cap">
-        The bottle never touches the sea. The amphora is sealed with cork and two layers of wax
-        before it goes down.
+        {t.caption}
       </figcaption>
     </figure>
   )

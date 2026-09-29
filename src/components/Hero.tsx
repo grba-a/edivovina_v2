@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { HERO } from '@/data/copy'
+import { getDict, href, type Lang } from '@/i18n'
 
 /**
  * Hero. Amfore OVDJE NEMA — Petar je trazio da se pojavi tek nakon heroja.
@@ -13,7 +13,8 @@ import { HERO } from '@/data/copy'
  * Visina je `min-height`, ne `100vh`: puni kadar gura samu stranicu izvan
  * prve slike, a prva slika je ono sto dobiva i thumbnail i onaj koji skrola.
  */
-export default function Hero() {
+export default function Hero({ lang = 'en' }: { lang?: Lang }) {
+  const HERO = getDict(lang).hero
   return (
     <section data-act="hero" className="hero">
       {/* POZADINA BEZ KOMPASA. Nasa stara `hero.jpg` imala je kompas PECEN u
@@ -81,7 +82,7 @@ export default function Hero() {
         <div className="hero-brand rise rise-2">
           <Image
             src="/photo/hero-bottles.png"
-            alt="Navis Mysterium amphora and bottle"
+            alt={HERO.bottlesAlt}
             /* 409x420 je STVARNA velicina datoteke. Prije je ovdje pisalo
                520x360 — omjer 1,44 umjesto 0,97, pa je okvir do ucitavanja
                slike bio krivog oblika i sadrzaj je poskakivao. */
@@ -102,10 +103,10 @@ export default function Hero() {
         {/* Prvi put da na naslovnici iznad preloma postoji put prema kupnji.
             Dvije razlicite namjere: kupiti i razumjeti. */}
         <div className="hero-ctas rise rise-3">
-          <a className="btn btn-solid" href={HERO.ctaPrimary.href}>
+          <a className="btn btn-solid" href={href(lang, HERO.ctaPrimary.href)}>
             {HERO.ctaPrimary.label}
           </a>
-          <a className="btn" href={HERO.ctaGhost.href}>
+          <a className="btn" href={href(lang, HERO.ctaGhost.href)}>
             {HERO.ctaGhost.label}
           </a>
         </div>

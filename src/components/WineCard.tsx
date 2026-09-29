@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import type { Wine } from '@/data/wines'
 import { money } from '@/lib/money'
+import { getDict, href, type Lang } from '@/i18n'
 
 /**
  * Kartica vina. ODLUKE B1 i C1, Petar 2026-09-24.
@@ -22,12 +23,21 @@ import { money } from '@/lib/money'
  * Gumbi su INERTNI do prepisa u WooCommerce (odluka C, 2026-09-18). Ovo je
  * predlozak, ne trgovina — zato `aria-disabled`, a ne lazna kosarica.
  */
-export default function WineCard({ wine, priority }: { wine: Wine; priority?: boolean }) {
+export default function WineCard({
+  wine,
+  priority,
+  lang = 'en',
+}: {
+  wine: Wine
+  priority?: boolean
+  lang?: Lang
+}) {
   const out = !wine.inStock
+  const t = getDict(lang).card
 
   return (
     <li className={`wine${out ? ' is-out' : ''}`}>
-      <a className="wine-shot" href={`/product/${wine.slug}`} tabIndex={-1} aria-hidden>
+      <a className="wine-shot" href={href(lang, `/product/${wine.slug}`)} tabIndex={-1} aria-hidden>
         <Image
           src={wine.photo}
           alt=""
@@ -37,11 +47,11 @@ export default function WineCard({ wine, priority }: { wine: Wine; priority?: bo
           className="wine-img"
           priority={priority}
         />
-        {wine.undersea ? <span className="wine-flag">Undersea</span> : null}
+        {wine.undersea ? <span className="wine-flag">{t.undersea}</span> : null}
       </a>
 
       <h3 className="wine-name">
-        <a href={`/product/${wine.slug}`}>{wine.name}</a>
+        <a href={href(lang, `/product/${wine.slug}`)}>{wine.name}</a>
       </h3>
       <p className="wine-kind">{wine.kind}</p>
 
@@ -58,10 +68,10 @@ export default function WineCard({ wine, priority }: { wine: Wine; priority?: bo
         {out ? (
           /* Rasprodano se kaze, ne skriva. Kod njih ovo vino i dalje stoji u
              mrezi s gumbom „Read more" i bez ijedne oznake. */
-          <span className="wine-out">Sold out</span>
+          <span className="wine-out">{t.soldOut}</span>
         ) : (
           <span className="btn" aria-disabled="true">
-            Add to cart
+            {t.add}
           </span>
         )}
       </div>

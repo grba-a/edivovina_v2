@@ -1,4 +1,5 @@
-import { HOME_WINES, WINES } from '@/data/wines'
+import { WINES } from '@/data/wines'
+import { getDict, href, homeWinesFor, type Lang } from '@/i18n'
 import { LANE_NARROW } from '@/lib/stage'
 import WineCard from './WineCard'
 
@@ -18,29 +19,29 @@ import WineCard from './WineCard'
  * Bez eyebrow oznake: stranica ih je nosila pet na sedam sekcija, a gornja
  * granica je jedna na tri. Naslov i dvije boce ispod njega su dovoljni.
  */
-export default function Wines() {
-  const rest = WINES.length - HOME_WINES.length
+export default function Wines({ lang = 'en' }: { lang?: Lang }) {
+  const t = getDict(lang).homeWines
+  const home = homeWinesFor(lang)
+  const rest = WINES.length - home.length
 
   return (
     <section data-act="wines" className={`section lane-${LANE_NARROW.wines}`} id="wines">
       <div className="wrap full">
         <div className="sec-head">
-          <h2>Navis Mysterium</h2>
+          <h2>{t.title}</h2>
         </div>
 
         {/* Kartica je od 2026-09-24 zajednicka komponenta s /shop, da obrazac
             postoji na jednom mjestu a ne u dvije kopije koje se raziđu. */}
         <ul className="grid-wines">
-          {HOME_WINES.map((w) => (
-            <WineCard key={w.slug} wine={w} />
+          {home.map((w) => (
+            <WineCard key={w.slug} wine={w} lang={lang} />
           ))}
         </ul>
 
         <p className="wine-rest">
-          <a href="/shop">All {WINES.length} wines</a>
-          <span>
-            {rest} more, including the TRIS set and the sparkling Eros
-          </span>
+          <a href={href(lang, '/shop')}>{t.all(WINES.length)}</a>
+          <span>{t.more(rest)}</span>
         </p>
       </div>
     </section>

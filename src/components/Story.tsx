@@ -1,4 +1,4 @@
-import { STORY, MISSION, FACTS } from '@/data/copy'
+import { getDict, href, type Lang } from '@/i18n'
 import { LANE_NARROW } from '@/lib/stage'
 
 /**
@@ -9,7 +9,8 @@ import { LANE_NARROW } from '@/lib/stage'
  * Zato blok nosi traku (`lane-r`) i tekst se povuce lijevo — bez toga bi
  * predmet sjeo na odlomak.
  */
-export default function Story() {
+export default function Story({ lang = 'en' }: { lang?: Lang }) {
+  const { story: STORY, mission: MISSION, facts: FACTS } = getDict(lang)
   return (
     <section
       data-act="story"
@@ -23,7 +24,7 @@ export default function Story() {
           {STORY.body.map((para) => (
             <p key={para.slice(0, 24)}>{para}</p>
           ))}
-          <a className="btn" href="/about-us">
+          <a className="btn" href={href(lang, '/about-us')}>
             {STORY.cta}
           </a>
         </div>

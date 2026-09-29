@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { VIEWER } from '@/data/copy'
+import type { Dict } from '@/i18n'
 import { nudge } from '@/lib/stage'
 
 /**
@@ -21,7 +21,10 @@ import { nudge } from '@/lib/stage'
  * Zamah NE ide kroz React state: to bi bio re-render na svaki pokret prsta.
  * `nudge()` pise u modul-store koji `Mesh` ionako cita po frameu.
  */
-export default function Viewer() {
+/* Tekst i odrediste stizu kao props iz server komponente: ovo je klijentska
+   komponenta, pa `getDict` ovdje bi u klijentski bundle povukao oba rjecnika i
+   sve podatke uz njih. */
+export default function Viewer({ copy: VIEWER, ctaHref }: { copy: Dict['viewer']; ctaHref: string }) {
   const grab = useRef<HTMLDivElement>(null)
   const last = useRef<{ x: number; y: number } | null>(null)
   const [touched, setTouched] = useState(false)
@@ -85,7 +88,7 @@ export default function Viewer() {
            je slobodna rotacija u dvije osi. Ostaje obicno zarista podrucje s
            imenom i opisom, pa citac ekrana kaze i sto je i kako se koristi. */
         tabIndex={0}
-        aria-label="Amphora, 3D view"
+        aria-label={VIEWER.aria}
         aria-describedby="view-keys"
         onPointerDown={onDown}
         onPointerMove={onMove}
@@ -111,7 +114,7 @@ export default function Viewer() {
           ))}
         </dl>
 
-        <a className="btn" href={VIEWER.cta.href}>
+        <a className="btn" href={ctaHref}>
           {VIEWER.cta.label}
         </a>
       </div>
