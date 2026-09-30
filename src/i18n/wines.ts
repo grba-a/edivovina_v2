@@ -59,7 +59,7 @@ const HR: Record<string, WineText> = {
     spec: ['Vrhunsko crno vino'],
     body:
       `0,75 l ${AGED} ` +
-      'Plavac mali s položaja Dingač i Postup. Mineralan, pikantan i izrazito voćan okus. Aroma suhih šljiva je zaštitni znak Plavca Maloga, ali nalazimo i arome bobičastog voća. Posebice crnog i crvenog ribizla. Prisutni su, klinčići, cimet, slatki začini, cederovina, rogač. Sočni, zreli i uglađeni tanini u kombinaciji s neobičnim i vrlo ugodnom svježinom te zrelom voćnosti ostavljaju mekan, nježan i ugodno trpak okus.' /* HR */,
+      'Plavac mali s položaja Dingač i Postup. Mineralan, pikantan i izrazito voćan okus. Aroma suhih šljiva je zaštitni znak Plavca Maloga, ali nalazimo i arome bobičastog voća. Posebice crnog i crvenog ribizla. Prisutni su, klinčići, cimet, slatki začini, cederovina, rogač. Sočni, zreli i uglađeni tanini u kombinaciji s neobičnim i vrlo ugodnom svježinom te zrelom voćnosti ostavljaju mekan, nježan i skladan okus.' /* HR */,
     notice: NOTE_UNIQUE_BOTTLE,
     awardLabel: 'Zlato, America Wine Awards 2021',
   },
@@ -84,7 +84,7 @@ const HR: Record<string, WineText> = {
     kind: 'Dingač',
     spec: ['Vrhunsko vino', '0,75 l'],
     body:
-      'Plavac mali s položaja Dingač i Postup. Mineralan, pikantan i izrazito voćan okus. Aroma suhih šljiva je zaštitni znak Plavca Maloga, ali nalazimo i arome bobičastog voća. Posebice crnog i crvenog ribizla. Prisutni su, klinčići, cimet, slatki začini, cederovina, rogač. Sočni, zreli i uglađeni tanini u kombinaciji s neobičnim i vrlo ugodnom svježinom te zrelom voćnosti ostavljaju mekan, nježan i ugodno trpak okus.' /* HR */,
+      'Plavac mali s položaja Dingač i Postup. Mineralan, pikantan i izrazito voćan okus. Aroma suhih šljiva je zaštitni znak Plavca Maloga, ali nalazimo i arome bobičastog voća. Posebice crnog i crvenog ribizla. Prisutni su, klinčići, cimet, slatki začini, cederovina, rogač. Sočni, zreli i uglađeni tanini u kombinaciji s neobičnim i vrlo ugodnom svježinom te zrelom voćnosti ostavljaju mekan, nježan i skladan okus.' /* HR */,
     notice: NOTE_PLAIN,
     awardLabel: 'Srebro, Decanter World Wine Awards',
   },
@@ -114,7 +114,7 @@ const HR: Record<string, WineText> = {
     kind: 'Rosé',
     spec: ['Rosé'],
     body:
-      '0,75 l Vino je kristalno bistro, dublje ružičaste boje i srednje viskoznosti. Nosom dominiraju arome ruže, jagode i crvenog voća. Arome su vrlo ugodne i postojane.',
+      '0,75 l Vino je kristalno bistro, dublje ružičaste boje i srednje viskoznosti. Nosom dominiraju arome ruže, jagode i crvenog voća. Arome su vrlo ugodne i dugotrajne.',
   },
 }
 
