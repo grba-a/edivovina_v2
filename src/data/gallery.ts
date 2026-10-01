@@ -1,5 +1,6 @@
 /**
- * GALERIJA — 158 fotografija s klijentovog weba, povucene 24. rujna 2026.
+ * GALERIJA — 158 fotografija s klijentovog weba (24. rujna 2026.) i cetiri
+ * klijentove fotografije cepa (1. listopada 2026.).
  *
  * ODLUKA G1, Petar 2026-09-24: sekcije po kategoriji, sve na jednoj stranici,
  * lijeno ucitavanje. Nula JavaScripta za filtriranje — kod njih je filtar
@@ -171,6 +172,23 @@ export const SHOTS: Shot[] = [
   { cat: 'final', file: 'final-fp-71.webp', w: 1200, h: 569 },
   { cat: 'final', file: 'final-fp-72.webp', w: 900, h: 1200 },
   { cat: 'final', file: 'final-fp-73.webp', w: 1200, h: 900 },
+  /* CEP S LOGOM — klijentove fotografije, stigle 1. listopada 2026.
+     Petar ih je stavio u „Vinariju": snimljene su na stolu vani, a kategorija
+     kaze „gdje se proizvodi i kusa".
+
+     DVIJE SU NA VRHU, NE SVE CETIRI, i to je namjerno. Stranica prikazuje
+     osam po kategoriji, pa svaka nova na vrhu izbaci jednu postojecu iz
+     vidljivih. Cetiri bi znacile da je pola kategorije isti cep. Preostale
+     dvije stoje na kraju bloka: broje se u ukupnom broju i tu su kad zatrebaju,
+     ali ne guraju snimke vinarije van.
+
+     Uspravne su (3:4), a mreza rezje celiju na 4:3. Provjereno kako ispadnu:
+     cep prezivi jer je u sredini kadra, nebo i stol se izgube.
+
+     Peta poslana fotografija nije ovdje: isti kadar kao `cork-lying-2`,
+     izmjerena razlika 4,3 od 255. */
+  { cat: 'winebar', file: 'cork-lying-1.webp', w: 900, h: 1200 },
+  { cat: 'winebar', file: 'cork-standing-1.webp', w: 900, h: 1200 },
   { cat: 'winebar', file: 'winebar-vinarija-1.webp', w: 1200, h: 583 },
   { cat: 'winebar', file: 'winebar-vinarija-2.webp', w: 900, h: 1200 },
   { cat: 'winebar', file: 'winebar-vinarija-3.webp', w: 1200, h: 900 },
@@ -189,6 +207,10 @@ export const SHOTS: Shot[] = [
   { cat: 'winebar', file: 'winebar-vinarija-16.webp', w: 1200, h: 583 },
   { cat: 'winebar', file: 'winebar-vinarija-17.webp', w: 900, h: 1200 },
   { cat: 'winebar', file: 'winebar-vinarija-18.webp', w: 1200, h: 900 },
+  /* Druge dvije klijentove fotografije cepa: u arhivi kategorije, izvan
+     vidljivih osam. Varijacije istih dvaju kadrova iznad. */
+  { cat: 'winebar', file: 'cork-lying-2.webp', w: 900, h: 1200 },
+  { cat: 'winebar', file: 'cork-standing-2.webp', w: 900, h: 1200 },
 ]
 
 export const shotsIn = (cat: string) => SHOTS.filter((s) => s.cat === cat)
