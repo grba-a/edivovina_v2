@@ -7,7 +7,8 @@ import { getDict, type Lang } from '@/i18n'
  * odjednom: DUBINU i VRIJEME. Amfora se spusta na uzetu, na dnu vec stoje
  * druge, i uz njih stoje brojke.
  *
- * BROJKE SU NJIHOVE, s njihove About stranice: 18–25 metara i „more than 700
+ * BROJKE SU NJIHOVE: 15–20 metara (klijentova ispravka 2026-10-02; prije
+ * 18–25 s njihove About stranice) i „more than 700
  * days". Njihov web si na dubini proturjeci (press navodi 15 i 20 m), pa do
  * klijentove potvrde vrijedi ono sto pise na About stranici — odluka L1.
  */

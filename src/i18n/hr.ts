@@ -45,7 +45,7 @@ const PLACE_HR: Record<
   },
   'wine-bar': {
     name: 'Edivo Wine Bar' /* HR */,
-    what: 'Degustacijska soba, s amforama koje su izronile s morskog dna.',
+    what: 'Degustacijska soba, s amforama koje su izronjene s morskog dna.',
     region: 'Poluotok Pelješac, Hrvatska',
     alt: 'Bačve uz svođeni podrum u mjestu Drače',
     sees: [
@@ -105,7 +105,7 @@ export const hr: Dict = {
       {
         n: 2,
         title: 'Kolijevka',
-        body: 'Zavareni armaturni čelik držao je amforu uspravno na oko 20 metara. Izroni kalcificirano bijela.',
+        body: 'Zavareni armaturni čelik držao je amforu uspravno na 15 do 20 metara. Izroni kalcificirano bijela.',
       },
     ],
     cta: { label: 'Pogledajte vina', href: '/shop' },
@@ -192,7 +192,7 @@ export const hr: Dict = {
         'S bocama nismo imali prevelikih prepreka, no priča s amforama je bila puno zahtjevnija. Bilo je potrebno istražiti je li moguće staviti staklenu bocu staviti izravno u amforu, kako vino ne bi izgubilo kvalitetu od bilo kakvog prodora mora.',
         /* Njihov tekst kaze „na odlezavanje DO 700 dana"; engleski, naslovnica i
            sve provjere kazu „VISE OD 700 dana". Ovdje stoji potvrdeno. */
-        'Koristili smo staklenu bocu od 0.75 L koja se stavlja u glinenu amforu, zaštitili je s čepom i dvostrukim slojem voska, zatim uronili u more, na dubinu od 18-25 metara, na odležavanje više od 700 dana. Nakon toga smo znali da smo napravili nešto posebno, nešto što će ispisati povijest. Nazvali smo ga Navis Mysterium - Brodska tajna.',
+        'Koristili smo staklenu bocu od 0.75 L koja se stavlja u glinenu amforu, zaštitili je s čepom i dvostrukim slojem voska, zatim uronili u more, na dubinu od 15-20 metara, na odležavanje više od 700 dana. Nakon toga smo znali da smo napravili nešto posebno, nešto što će ispisati povijest. Nazvali smo ga Navis Mysterium - Brodska tajna.',
         'Danas imamo prvu podvodnu vinariju. Dobili smo koncesiju na stari potopljeni ribarski brod koji je ležao na morskom dnu više od 30 godina i na njega smo stavili vino u bocama i amforama, i osigurali ih od bilo kakvog rizika krađe.',
       ],
       quote:
@@ -205,7 +205,7 @@ export const hr: Dict = {
       ],
       close: 'Svaka boca Navis Mysterium je jedinstvena. Proizvod je rezultat velike ljubavi, napora i vremena.' /* HR */,
     },
-    marks: { region: 'Pelješac', years: '2011–2014', volume: '0,75 L', depth: '18–25 m', days: '700+ dana' },
+    marks: { region: 'Pelješac', years: '2011–2014', volume: '0,75 L', depth: '15–20 m', days: '700+ dana' },
   },
   fig: {
     map: {
@@ -225,9 +225,9 @@ export const hr: Dict = {
     },
     depth: {
       title:
-        'Amfora koja se na užetu spušta na morsko dno, gdje već stoje redovi amfora, 18 do 25 metara dubine',
+        'Amfora koja se na užetu spušta na morsko dno, gdje već stoje redovi amfora, 15 do 20 metara dubine',
       storedAt: 'čuva se u moru, na dubini od' /* HR */,
-      metres: '18–25 metara' /* HR */,
+      metres: '15–20 metara' /* HR */,
       forMoreThan: 'više od ',
       days: '700 dana',
       caption: 'Dubina i trajanje onako kako ih navodi njihova stranica O nama.',
@@ -282,7 +282,7 @@ export const hr: Dict = {
     alt: 'Ronilac iznad redova potopljenih amfora',
     navLabel: 'Odjeljci galerije',
     cats: [
-      { id: 'sea', title: 'Pod morem', lede: 'Što se događa 18 do 25 metara dolje.' },
+      { id: 'sea', title: 'Pod morem', lede: 'Što se događa 15 do 20 metara dolje.' },
       { id: 'production', title: 'Proizvodnja', lede: 'Punjenje, zatvaranje i spuštanje amfora.' },
       { id: 'amphora', title: 'Navis Mysterium', lede: 'Sama amfora, prije i poslije mora.' },
       { id: 'final', title: 'Vina', lede: 'Boce, amfore i drvene kutije u kojima putuju.' },

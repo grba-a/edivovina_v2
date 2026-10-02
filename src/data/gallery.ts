@@ -24,7 +24,7 @@
 export type Shot = { cat: string; file: string; w: number; h: number }
 
 export const GALLERY_CATS = [
-  { id: 'sea', title: 'Under the sea', lede: 'What happens 18 to 25 metres down.' },
+  { id: 'sea', title: 'Under the sea', lede: 'What happens 15 to 20 metres down.' },
   { id: 'production', title: 'Production', lede: 'Filling, sealing and lowering the amphorae.' },
   { id: 'amphora', title: 'Navis Mysterium', lede: 'The amphora itself, before and after the sea.' },
   { id: 'final', title: 'The wines', lede: 'Bottles, amphorae and the wooden boxes they ship in.' },

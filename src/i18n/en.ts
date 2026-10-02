@@ -69,7 +69,7 @@ export const en: Dict = {
       'Drace on the Peljesac peninsula, where Edivo submerged its first amphorae in 2013 and built the first underwater winery in Croatia.',
     h1: 'It starts in a village and ends on the seabed',
     data: ABOUT,
-    marks: { region: 'Pelješac', years: '2011–2014', volume: '0,75 L', depth: '18–25 m', days: '700+ dana' },
+    marks: { region: 'Pelješac', years: '2011–2014', volume: '0,75 L', depth: '15–20 m', days: '700+ dana' },
   },
   fig: {
     map: {
@@ -89,9 +89,9 @@ export const en: Dict = {
     },
     depth: {
       title:
-        'An amphora being lowered on a line to the seabed, where rows of amphorae already stand, 18 to 25 metres down',
+        'An amphora being lowered on a line to the seabed, where rows of amphorae already stand, 15 to 20 metres down',
       storedAt: 'stored under the sea at',
-      metres: '18–25 metres',
+      metres: '15–20 metres',
       forMoreThan: 'for more than ',
       days: '700 days',
       caption: 'Depth and duration as their own About page states them.',
