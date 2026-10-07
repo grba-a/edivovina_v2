@@ -5,11 +5,22 @@ import type { Lang } from './lang'
  * Hrvatski opisi vina. Katalog (cijene, slugovi, fotografije, zaliha) je JEDAN i
  * ostaje u `data/wines.ts` — ovdje se prepisuje samo ono sto je tekst.
  *
- * Gdje klijent na edivovina.hr/hr ima hrvatski opis, prenesen je DOSLOVNO
- * (i s njegovim tipfelerima: „Mysterim", „tpkast", „Zanjimljivo", „terior",
- * „pout", „insiprirale", „a." — vrijedi ih javiti klijentu). Gdje njihov
- * hrvatski web ostavlja engleski (Navis Q, Eros, Rose i sve napomene),
- * prevedeno je ovdje i to su NASE rijeci.
+ * Gdje klijent na edivovina.hr/hr ima hrvatski opis, prenesen je DOSLOVNO.
+ * Gdje njihov hrvatski web ostavlja engleski (Navis Q, Eros, Rose i sve
+ * napomene), prevedeno je ovdje i to su NASE rijeci.
+ *
+ * 7. listopada 2026., uz klijentovu ispravku 9 (vidi `docs/PLAN-KLIJENT-
+ * ISPRAVKE.md`), ispravljeni su njegovi tipfeleri — slovo po slovo, bez
+ * ijedne promjene znacenja:
+ *   Mysterim→Mysterium · tpkast→trpkast · sladkast→slatkast ·
+ *   poslozeno→posluzeno · „u Vasim casa"→„u Vasoj casi" · Zanjimljivo→
+ *   Zanimljivo · razlicta→razlicita · premjesom→primjesom · terior→teroar ·
+ *   bouqtom→buketom · pout→poput · insiprirale→inspirirale · polutoka→
+ *   poluotoka. Popis ide klijentu da ih ispravi i na svom webu.
+ *
+ * STOJI I DALJE, nije tipfeler nego gramatika, i ceka klijentovu rijec:
+ * kod amfore „Vino ... kristalno je bistar ... harmonican" (vino je srednji
+ * rod, pa bi islo „bistro ... harmonicno").
  */
 
 type WineText = Partial<Pick<Wine, 'name' | 'kind' | 'spec' | 'body' | 'notice'>> & {
@@ -36,10 +47,10 @@ const HR: Record<string, WineText> = {
     kind: 'Plavac Mali',
     spec: ['Vrhunsko crno vino', '0,75 l', AGED, '2013. · 14,5%'],
     body:
-      'Posebno osunčano tlo na južnim padinama poluotoka Pelješac iznad djevičanskih uvala, na obronima gdje su vinogradi na strminama i do 45%,u ekološki zdravom predjelu je dom Dingača. Preko 2800 sunčanih sati godišnje, uz morsku sol nošenu južinama, ljubi ovu specijalnu i kvalitetnu sortu grožđa. ' +
-      'Vino tamno rubin crvene boje s ljubičastim preljevima, kristalno je bistar, punog i zaobljenog okusa, harmoničan, tpkast i sladkast. ' +
-      'Edivo Navis Mysterim vino posebno je i jer nikada nije bilo izloženo svjetlosti do trenutka kad je posloženo u Vašim čaša ' +
-      'Zanjimljivo je da su čak i stari Grci čuvali svoja vina u amforama čije su obloge od smole čuvale vina.' /* HR */,
+      'Plavac mali s položaja Dingač i Postup. Posebno osunčano tlo na južnim padinama poluotoka Pelješac iznad djevičanskih uvala, na obronima gdje su vinogradi na strminama i do 45%, u ekološki zdravom predjelu je njegov dom. Preko 2800 sunčanih sati godišnje, uz morsku sol nošenu južinama, ljubi ovu specijalnu i kvalitetnu sortu grožđa. ' +
+      'Vino tamno rubin crvene boje s ljubičastim preljevima, kristalno je bistar, punog i zaobljenog okusa, harmoničan, trpkast i slatkast. ' +
+      'Edivo Navis Mysterium vino posebno je i jer nikada nije bilo izloženo svjetlosti do trenutka kad je posluženo u Vašoj čaši. ' +
+      'Zanimljivo je da su čak i stari Grci čuvali svoja vina u amforama čije su obloge od smole čuvale vina.' /* HR */,
     notice: NOTE_UNIQUE_AMPHORA,
     awardLabel: 'Zlato, America Wine Awards 2021',
   },
@@ -47,18 +58,17 @@ const HR: Record<string, WineText> = {
     kind: 'Set od tri',
     spec: ['Vrhunsko crno vino', '0,75 x 3'],
     body:
-      'Mysterium Amfora, boca iz mora i regularna boca Edivo Navis Mysterium TRIS kombinacija je najcjenjenijeg Hrvatskog vina u drvenoj kutiji u tri različta pakiranja. ' +
+      'Mysterium Amfora, boca iz mora i regularna boca Edivo Navis Mysterium TRIS kombinacija je najcjenjenijeg Hrvatskog vina u drvenoj kutiji u tri različita pakiranja. ' +
       'Radi se o istom vinu koje je dozrijevalo na različite načine, te u svakom pakiranju ima specifičan okus i aromu. ' +
-      'Pravi vinoljupci uživati će u različitim nijansama aroma ovog iznimno elegantnog crnog vina s puno finih granuliranih zrelih tanina, naglašenim okusima tamnog voća s herbalnom premjesom. ' +
+      'Pravi vinoljupci uživati će u različitim nijansama aroma ovog iznimno elegantnog crnog vina s puno finih granuliranih zrelih tanina, naglašenim okusima tamnog voća s herbalnom primjesom. ' +
       'Idealan je poklon u posebnim prigodama, te ostaje kao vječni suvenir' /* HR */,
     notice: NOTE_UNIQUE_SET,
   },
   'navis-mysterium-undersea-bottle': {
     name: 'Navis Mysterium - Boca iz mora' /* HR */,
     kind: 'Plavac Mali',
-    spec: ['Vrhunsko crno vino'],
+    spec: ['Vrhunsko crno vino', '0,75 l', AGED],
     body:
-      `0,75 l ${AGED} ` +
       'Plavac mali s položaja Dingač i Postup. Mineralan, pikantan i izrazito voćan okus. Aroma suhih šljiva je zaštitni znak Plavca Maloga, ali nalazimo i arome bobičastog voća. Posebice crnog i crvenog ribizla. Prisutni su, klinčići, cimet, slatki začini, cederovina, rogač. Sočni, zreli i uglađeni tanini u kombinaciji s neobičnim i vrlo ugodnom svježinom te zrelom voćnosti ostavljaju mekan, nježan i ugodno trpak okus.' /* HR */,
     notice: NOTE_UNIQUE_BOTTLE,
     awardLabel: 'Zlato, America Wine Awards 2021',
@@ -90,31 +100,31 @@ const HR: Record<string, WineText> = {
   },
   'dingac-edivo': {
     kind: 'Dingač',
-    spec: ['Vrhunsko crno vino'],
+    spec: ['Vrhunsko crno vino', '0,75 l'],
     body:
-      '0,75 l Dingač je nedvojbeno najpoznatiji hrvatsku terior. Iznimno elegantno crno vino s puno finih granuliranih zrelih tanina, naglašenim okusima tamnog voća s herbalnom premjesom, i jako kompleksnim bouqtom koji sadrži crno i crveno voće, tamnu čokoladu, dim, cimet, slatke začine, cederovinu, rogač. Neobična i ugodna svježina, te zrela voćnost ostavljaju mekan, a pikantan i izrazito voćan okus.' /* HR */,
+      'Dingač je nedvojbeno najpoznatiji hrvatski teroar. Iznimno elegantno crno vino s puno finih granuliranih zrelih tanina, naglašenim okusima tamnog voća s herbalnom primjesom, i jako kompleksnim buketom koji sadrži crno i crveno voće, tamnu čokoladu, dim, cimet, slatke začine, cederovinu, rogač. Neobična i ugodna svježina, te zrela voćnost ostavljaju mekan, a pikantan i izrazito voćan okus.' /* HR */,
     notice: NOTE_PLAIN,
   },
   'plavac-edivo': {
     kind: 'Plavac Mali',
-    spec: ['Vrhunsko crno vino'],
+    spec: ['Vrhunsko crno vino', '0,75 l'],
     body:
-      '0,75 l Granitno ljubičasta boja s modrim refleksima karakteristika je Plavca dok je mlad, a kada je zreliji karakterizira ga tamno rubin crvena boja. Slojevit je aromama zrelog tamnog voća, herbalnim nijansama, rogačem, klinčićima, čokoladom, cimetom i slatkim začinima. Sočni i zreli tanini u kombinaciji sa zrelom voćnosti ostavljaju mekan, nježan i kompleksan okus.' /* HR */,
+      'Granitno ljubičasta boja s modrim refleksima karakteristika je Plavca dok je mlad, a kada je zreliji karakterizira ga tamno rubin crvena boja. Slojevit je aromama zrelog tamnog voća, herbalnim nijansama, rogačem, klinčićima, čokoladom, cimetom i slatkim začinima. Sočni i zreli tanini u kombinaciji sa zrelom voćnosti ostavljaju mekan, nježan i kompleksan okus.' /* HR */,
     notice: NOTE_PLAIN,
   },
   'q-edivo': {
     kind: 'Bijelo',
-    spec: ['Vrhunsko bijelo vino'],
+    spec: ['Vrhunsko bijelo vino', '0,75 l'],
     body:
-      '0,75 l Uz bogatstvo crnih vina, pout Plavca Malog i Dingača, kojima je Pelješac dom, u Hrvatskoj, a posebno na Jadranu dominiraju bijele autohtone sorte Pošip i Rukatac koje su nas insiprirale na naš proizvod - Q. ' +
-      'Riječ je o polusuhom bijelom vinu, kupaži sorti Chardonnay, Pošip i Rukatac. Ovo vino izvrstan je spoj tri značajna područja bijelog vina u Hrvatskoj- ravne Slavonije, polutoka Pelješca i otoka Korčule.' /* HR */,
+      'Uz bogatstvo crnih vina, poput Plavca Malog i Dingača, kojima je Pelješac dom, u Hrvatskoj, a posebno na Jadranu dominiraju bijele autohtone sorte Pošip i Rukatac koje su nas inspirirale na naš proizvod - Q. ' +
+      'Riječ je o polusuhom bijelom vinu, kupaži sorti Chardonnay, Pošip i Rukatac. Ovo vino izvrstan je spoj tri značajna područja bijelog vina u Hrvatskoj — ravne Slavonije, poluotoka Pelješca i otoka Korčule.' /* HR */,
     notice: NOTE_PLAIN,
   },
   rose: {
     kind: 'Rosé',
-    spec: ['Rosé'],
+    spec: ['Rosé', '0,75 l'],
     body:
-      '0,75 l Vino je kristalno bistro, dublje ružičaste boje i srednje viskoznosti. Nosom dominiraju arome ruže, jagode i crvenog voća. Arome su vrlo ugodne i postojane.',
+      'Vino je kristalno bistro, dublje ružičaste boje i srednje viskoznosti. Nosom dominiraju arome ruže, jagode i crvenog voća. Arome su vrlo ugodne i postojane.',
   },
 }
 

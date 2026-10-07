@@ -55,6 +55,57 @@ Prenio Petar. Stanje: `[ ]` čeka, `[x]` napravljeno, `[?]` treba Petrova riječ
       misli na pravu fotografiju (`cork-*.webp`, dodane 1. 10.). Zamjena ili
       dodatak? Pitati prije nego diram hero.
 
+## Novo, 7. listopada 2026.
+
+- [x] **9. Amfora i boca iz mora ne pricaju istu pricu.** Klijent: u opisu amfore
+      stoji samo Dingac, u opisu boce iz mora Dingac i Postup, a vino je isto —
+      razlikuje se samo odlezavanje. Ima pravo, i dvostruko: amforin tekst
+      Dingac naziva *sortom grozda*, a Dingac je polozaj; sorta je Plavac mali,
+      sto druge dvije stranice vec tocno kazu.
+      Gdje: `src/data/wines.ts` (EN, `navis-mysterium-undersea-amphora.body`) i
+      `src/i18n/wines.ts` (HR, isti slug). `body` se crta SAMO na
+      `/product/[slug]` (`src/views/Product.tsx:91`), nigdje drugdje.
+      Tri varijante + tri sitnice od iste bolesti idu Petru kao artifact:
+      https://claude.ai/artifact/NmrRHY1EfFFfsHiY6ERbJn — izbor se sprema u
+      db `izmjena9/` (`tekst` = A/B/C, pa `spec`, `oznaka`, `tipfeleri`).
+      Moja preporuka: **B** — isti prvi redak na sve tri stranice Navis
+      Mysteriuma, a dalje svaka ide svojim putem.
+      PAZI: zaglavlje `src/data/wines.ts` tvrdi da je jedina izmjena njihovog
+      teksta bila dopisana jedinica „0,75 l". Ta se napomena mijenja zajedno s
+      tekstom, inace file lazi o sebi.
+      Posljedica dalje: katalog je 24. rujna povucen iz NJIHOVOG WooCommercea,
+      pa ista greska i dalje stoji na edivovina.hr. Ako je klijent ne ispravi
+      ondje, vratit ce se pri prepisu u Breakdance.
+
+      NAPRAVLJENO 7. listopada. Petar: „ti odluci sto mislis da je najbolje i
+      pushaj". Odluceno i izvedeno:
+      - **Varijanta B.** Amfora sada otvara istim retkom kao boca iz mora i
+        regularna boca („Plavac mali s polozaja Dingac i Postup."), a dalje
+        zadrzava svoj tekst — 2800 suncanih sati i padine od 45% ostaju.
+        Pada i njihova greska da je Dingac sorta grozda.
+      - **Mjera i odlezavanje u `spec`.** Bili su zalijepljeni na pocetak
+        OPISA kod SEST proizvoda, ne samo kod boce iz mora kako je artifact
+        pitao; amfora ih je jedina imala na mjestu. Premjesteni su svi, inace
+        bi shop bio neujednacen na novi nacin.
+      - **Tipfeleri popravljeni** (13 ih je, popis je u zaglavlju
+        `src/i18n/wines.ts`). Popis ide klijentu da ih ispravi i kod sebe.
+      - **Oznaka nad regularnom bocom NIJE dirana.** Ostaje „Dingac" umjesto
+        „Plavac Mali". To je njihova kategorija iz njihovog kataloga, a je li
+        to vino deklarirano kao Dingac ili kao Plavac s dva polozaja znaju
+        samo oni. Mijenjati je napamet znacilo bi izmisliti tvrdnju o vinu.
+        PITATI KLIJENTA.
+      Provjereno u pravom WebKitu na 390, oba jezika, obje stranice: isti prvi
+      redak, iste specifikacije, bez greski u konzoli. Snimke u
+      `.shots/izmjena9-*.png`.
+
+- [?] **10. Gramatika u amforinom hrvatskom opisu.** Nije tipfeler pa nije
+      dirano: „Vino ... kristalno je bistar ... harmonican" — vino je srednji
+      rod, islo bi „bistro ... harmonicno". Klijentov tekst, treba njegova
+      rijec (ili barem tvoja, kao i kod „izronile"→„izronjene").
+- [?] **11. Decanterovo srebro.** Staro pitanje, otvoreno i dalje: nagradu nosi
+      „Navis Mysterium Regular Bottle", a u katalogu postoji i proizvod koji se
+      zove „Dingac Edivo". Nijedan njihov opis ne spominje nagradu.
+
 ## Pravila koja ovdje vrijede
 
 - Tuđi tekst (press, novinski članci) se ne ispravlja, ni kad je brojka druga.

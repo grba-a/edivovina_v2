@@ -10,9 +10,20 @@
  * `slug` je isti kao njihov WooCommerce slug, pa se katalog pri prepisu u
  * Breakdance + WooCommerce mapira jedan na jedan.
  *
- * JEDINA IZMJENA NJIHOVOG TEKSTA: kod amfore im mjera stoji kao „0,75" bez
- * jedinice, dok svugdje drugdje pise „0,75 l". Dopisana je jedinica i nista
- * drugo.
+ * IZMJENE NJIHOVOG TEKSTA, sve tri na klijentov zahtjev ili uz njegovu
+ * primjedbu — nijedna ne mijenja znacenje:
+ *
+ *  1. (15. rujna) Kod amfore im mjera stoji kao „0,75" bez jedinice, dok
+ *     svugdje drugdje pise „0,75 l". Dopisana je jedinica.
+ *  2. (7. listopada, klijentova ispravka 9) Opis amfore spominjao je samo
+ *     Dingac, a opis boce iz mora Dingac i Postup — isto vino, razlikuje se
+ *     samo odlezavanje. Amfora sada OTVARA istim retkom kao boca iz mora i
+ *     regularna boca: „Plavac mali grown at Dingac and Postup positions."
+ *     Usput pada i njihova greska da je Dingac sorta grozda; Dingac je
+ *     polozaj, sorta je Plavac mali.
+ *  3. (7. listopada) Mjera i nacin odlezavanja bili su zalijepljeni na
+ *     pocetak OPISA kod sest proizvoda, a kod amfore su u `spec`, gdje im je
+ *     mjesto. Premjesteni su, rijec po rijec, bez ijedne promjene teksta.
  */
 
 export type Wine = {
@@ -78,10 +89,11 @@ export const WINES: Wine[] = [
     reviews: { count: 2, rating: 5.00 },
     spec: ['Premium red wine', '0,75 l', 'aged under the sea for 1,5 to 2 years, comes in a hand crafted wooden box', '2013 · 14.5%'],
     body:
-      'Undisputedly the most recognized Croatian wine exported worldwide can only be found on '
-    +       'the Peljesac Peninsula. The grape varietal known as Dingac grows on very rugged land '
-    +       'with little top soil together with over 2800 hours of sunlight annually caressed by a '
-    +       'southerly breeze blowing the sea salt over the vines growing on its forty five degree '
+      'Plavac mali grown at Dingač and Postup positions. Undisputedly the most recognized '
+    +       'Croatian wine exported worldwide can only be found on the Peljesac Peninsula. It grows '
+    +       'on very rugged land with little top soil together with over 2800 hours of sunlight '
+    +       'annually caressed by a southerly breeze blowing the sea salt over the vines growing '
+    +       'on its forty five degree '
     +       'slopes… ideal conditions for growing grapes for red wine. The dark ruby color wine with '
     +       'a purplish tone, crystal clear full of a soft taste which is harmonized, tart and sweet. '
     +       'Edivo Navis Mysterium Amphora wine is unique because it has never seen light until it is '
@@ -127,11 +139,11 @@ export const WINES: Wine[] = [
     kind: 'Plavac Mali',
     inStock: false,
     reviews: { count: 2, rating: 5.00 },
-    spec: ['Premium red wine'],
+    spec: ['Premium red wine', '0,75 l', 'aged under the sea for 1,5 to 2 years, comes in a hand crafted wooden box'],
     body:
-      '0,75 l aged under the sea for 1,5 to 2 years, comes in a hand crafted wooden box Plavac '
-    +       'mali grown at Dingač and Postup positions. Mineral, spicy and extremely fruity with a '
-    +       'strong spicy addition. Plum jam is almost the trademark of Plavac Mali, but there are '
+      'Plavac mali grown at Dingač and Postup positions. Mineral, spicy and extremely fruity '
+    +       'with a strong spicy addition. Plum jam is almost the trademark of Plavac Mali, but '
+    +       'there are '
     +       'also plenty of berries. Red and blackcurrant in particular, cloves, cinnamon, sweet '
     +       'spices, cedar, carob. Juicy, ripe and fine polished tannins combined with unusually high '
     +       'and very pleasant freshness, and ripe fruitiness, make it soft, gentle and pleasantly '
@@ -207,9 +219,9 @@ export const WINES: Wine[] = [
     kind: 'Dingač',
     inStock: true,
     reviews: { count: 1, rating: 5.00 },
-    spec: ['Premium red wine'],
+    spec: ['Premium red wine', '0,75 l'],
     body:
-      '0,75 l Dingac is undisputedly the most recognized wine in Croatia. An extremely elegant '
+      'Dingac is undisputedly the most recognized wine in Croatia. An extremely elegant '
     +       'red wine filled with fine grained mature tannins. Highlighted with a flavor of dark '
     +       'fruits and a. herbal combination. A strong bouquet which holds dark and red fruits, dark '
     +       'chocolate, smokey, cinnamon, sweet spices, cedar and carob undertones. An unusual and '
@@ -227,9 +239,9 @@ export const WINES: Wine[] = [
     undersea: false,
     kind: 'Plavac Mali',
     inStock: true,
-    spec: ['Premium red wine'],
+    spec: ['Premium red wine', '0,75 l'],
     body:
-      '0,75 l A mature Plavac is characterized by its dark ruby red color. Mineral, spicy and '
+      'A mature Plavac is characterized by its dark ruby red color. Mineral, spicy and '
     +       'extremely fruity with a strong spicy addition. Plus jam is almost the trademark of '
     +       'Plavac Mali, but there are also plenty of berries, red and blackcurrant in particular, '
     +       'cloves, cinnamon, sweet spices, cedar, carob. Juicy, ripe and fine polished tannins '
@@ -248,9 +260,9 @@ export const WINES: Wine[] = [
     kind: 'White',
     inStock: true,
     reviews: { count: 1, rating: 5.00 },
-    spec: ['Premium white wine'],
+    spec: ['Premium white wine', '0,75 l'],
     body:
-      '0,75 l Among the many rich red wines like Plavac Mali and Dingač that originate from the '
+      'Among the many rich red wines like Plavac Mali and Dingač that originate from the '
     +       'Pelješac peninsula, we found inspiration for a white wine that combines the three white '
     +       'sorts Pošip, Rukatac and Chardonnay into our product. A Semi Dry, white wine which is a '
     +       'combination of Posip, Rukatac and Chardonnay. This wine has pulled together the three '
@@ -268,9 +280,9 @@ export const WINES: Wine[] = [
     undersea: false,
     kind: 'Rosé',
     inStock: true,
-    spec: ['Rosé'],
+    spec: ['Rosé', '0,75 l'],
     body:
-      '0,75 l The wine is crystal clear, it has a deeper pink color and medium viscosity. The '
+      'The wine is crystal clear, it has a deeper pink color and medium viscosity. The '
     +       'nose is dominated by aromas of rose, strawberry and red fruit. Aromas are quite pleasant '
     +       'and lasting.',
   },]
